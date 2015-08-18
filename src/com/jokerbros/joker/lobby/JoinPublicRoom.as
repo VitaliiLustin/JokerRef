@@ -1,6 +1,8 @@
 package com.jokerbros.joker.lobby 
 {
 	import com.jokerbros.joker.events.JoinRoomEvent;
+	import com.jokerbros.joker.events.LobbyEvent;
+	import com.jokerbros.joker.Facade.Facade;
 	import com.jokerbros.joker.user.User;
 	import com.smartfoxserver.v2.entities.data.ISFSArray;
 	import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -41,11 +43,11 @@ package com.jokerbros.joker.lobby
 		
 		private function onBlackListClick(e:MouseEvent):void 
 		{
-			dispatchEvent(new JoinRoomEvent(JoinRoomEvent.SHOW_BLACK_LIST));
+			Facade.dispatcher.dispatch(LobbyEvent.SHOW_BLACK_LIST);
 		}
 		private function onHelpClick(e:MouseEvent):void 
 		{
-			dispatchEvent(new JoinRoomEvent(JoinRoomEvent.SHOW_HELP));
+			Facade.dispatcher.dispatch(LobbyEvent.SHOW_HELP);
 		}
 		
 		public function init(type:int, rooms:ISFSArray= null, myRoom:ISFSObject=null):void
@@ -221,7 +223,8 @@ package com.jokerbros.joker.lobby
 
 			
 			data = { level:level, type:type };
-			dispatchEvent(new JoinRoomEvent(JoinRoomEvent.TAKE_PLACE, data));
+			
+			Facade.dispatcher.dispatch(LobbyEvent.TAKE_PLACE, data);
 		}
 		
 		private function onFreePlace(e:MouseEvent):void 
@@ -240,7 +243,8 @@ package com.jokerbros.joker.lobby
 			}
 			
 			data = { level:level, type:type };
-			dispatchEvent(new JoinRoomEvent(JoinRoomEvent.FREE_PLACE, data));
+			
+			Facade.dispatcher.dispatch(LobbyEvent.FREE_PLACE, data);
 		}
 		
 		

@@ -1,6 +1,7 @@
 package com.jokerbros.joker.lobby.windows 
 {
-	import com.jokerbros.joker.events.WindEnterPassEvent;
+	import com.jokerbros.joker.events.LobbyEvent;
+	import com.jokerbros.joker.Facade.Facade;
 	import com.jokerbros.joker.user.User;
 	import com.smartfoxserver.v2.entities.data.*;
 	import com.smartfoxserver.v2.requests.*;
@@ -103,8 +104,7 @@ package com.jokerbros.joker.lobby.windows
 				this.mcProgress.visible = true;
 				
 				var params:Object = {roomID: _joinRoomID, password: this.password.input.text.replace(/^\s+|\s+$/gs, '')}
-				
-				dispatchEvent(new WindEnterPassEvent(WindEnterPassEvent.RESPONSE, params))
+				Facade.dispatcher.dispatch(LobbyEvent.WIND_ENTER_RESPONSE, params);
 			}
 			
 		}
@@ -112,8 +112,7 @@ package com.jokerbros.joker.lobby.windows
 		private function onClose(e:MouseEvent):void 
 		{
 			btnEventsEnabled(false);
-			
-			dispatchEvent(new WindEnterPassEvent(WindEnterPassEvent.RESPONSE, false))
+			Facade.dispatcher.dispatch(LobbyEvent.WIND_ENTER_RESPONSE, false);
 		}
 		
 		/*PASSWORD*/

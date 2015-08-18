@@ -1,4 +1,4 @@
-package com.jokerbros.backgammon.events 
+package com.jokerbros.joker.events 
 {
 	import flash.events.Event;
 	

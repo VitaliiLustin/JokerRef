@@ -1,7 +1,8 @@
 package com.jokerbros.joker.lobby.tournament 
 {
 	import com.jokerbros.joker.connector.Connector;
-	import com.jokerbros.joker.events.TournamentEvent;
+	import com.jokerbros.joker.events.LobbyEvent;
+	import com.jokerbros.joker.Facade.Facade;
 	import com.jokerbros.joker.utils.TyniHelper;
 	import com.smartfoxserver.v2.entities.data.ISFSObject;
 	import com.smartfoxserver.v2.entities.data.SFSObject;
@@ -163,13 +164,13 @@ package com.jokerbros.joker.lobby.tournament
 			}
 			else if(params.getInt('code') == 2) // full
 			{
-				dispatchEvent(new TournamentEvent(TournamentEvent.ALERT, 'ტურნირში მონაწილეთა ადგილები \n შევსებულია.') )
+				Facade.dispatcher.dispatch(LobbyEvent.TOURNAMENT_ALERT, 'ტურნირში მონაწილეთა ადგილები \n შევსებულია.');
 				_mcParent.btnReg.visible = false;
 				_mcParent.mcTourFull.visible = true
 			}
 			else 
 			{
-				dispatchEvent(new TournamentEvent(TournamentEvent.ALERT, 'მოხდა ტექნიკური შეცდომა.')) 
+				Facade.dispatcher.dispatch(LobbyEvent.TOURNAMENT_ALERT, 'მოხდა ტექნიკური შეცდომა.');
 				initReg()
 			}
 		}
@@ -206,7 +207,7 @@ package com.jokerbros.joker.lobby.tournament
 			}
 			else 
 			{
-				dispatchEvent(new TournamentEvent(TournamentEvent.ALERT, 'მოხდა ტექნიკური შეცდომა') )
+				Facade.dispatcher.dispatch(LobbyEvent.TOURNAMENT_ALERT, 'მოხდა ტექნიკური შეცდომა');
 				initUnReg()
 			}
 		}
@@ -264,12 +265,12 @@ package com.jokerbros.joker.lobby.tournament
 		/*--------------------------WINDOWS HANDLERS-----------------------------------------------------------------------------------*/
 		private function onHowDistributed(e:MouseEvent):void 
 		{
-			dispatchEvent(new TournamentEvent(TournamentEvent.HOW_DISTRIBUTED))
+			Facade.dispatcher.dispatch(LobbyEvent.TOURNAMENT_HOW_DISTRIBUTED);
 		}
 		
 		private function onHowWork(e:MouseEvent):void 
 		{
-			dispatchEvent(new TournamentEvent(TournamentEvent.HOW_WORK))
+			Facade.dispatcher.dispatch(LobbyEvent.TOURNAMENT_HOW_WORK);
 		}
 		
 		/*-----------------------------------------------------------------------------------------------------------------------------*/

@@ -4,6 +4,7 @@ import com.jokerbros.joker.Facade.Facade;
 import com.jokerbros.joker.events.GameEvent;
 import com.jokerbros.joker.lobby.Lobby;
 import com.jokerbros.joker.user.User;
+import com.jokerbros.Parametrs;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 
 	public class MainHandler
@@ -52,62 +53,62 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 
 			if (_lobby.gameType == 0)
 			{
-				_lobby.gameType = params.getInt('gameType');
+				_lobby.gameType = params.getInt(Parametrs.PARAM_GAME_TYPE);
 
 				_lobby._ChangeGameType.setActiveTab(_lobby.gameType);
 			}
 			else
 			{
-				_lobby.gameType = params.getInt('gameType')
+				_lobby.gameType = params.getInt(Parametrs.PARAM_GAME_TYPE)
 			}
 
 			if (_lobby.gameType == 1)
 			{
-				if (params.getSFSObject('userInfo').getInt('isSetInfo') == 0)
+				if (params.getSFSObject(Parametrs.PARAM_USER_INFO).getInt(Parametrs.PARAM_IS_SET_INFO) == 0)
 				{
-					_lobby.showPreInitCashGame(true ,params.getUtfString('title'));
+					_lobby.showPreInitCashGame(true ,params.getUtfString(Parametrs.PARAM_TITLE));
 				}
-				else if (params.getSFSObject('userInfo').getInt('isSetInfo') == 1 && params.getBool('enableGame') == false)
+				else if (params.getSFSObject(Parametrs.PARAM_USER_INFO).getInt(Parametrs.PARAM_IS_SET_INFO) == 1 && params.getBool(Parametrs.PARAM_ENABLE_GAME) == false)
 				{
-					_lobby.showPreInitCashGame(false, params.getUtfString('title'));
+					_lobby.showPreInitCashGame(false, params.getUtfString(Parametrs.PARAM_TITLE));
 				}
 			}
 			else  if (_lobby.gameType == 2)
 			{
-				if (params.getBool('enableGame') == false)
+				if (params.getBool(Parametrs.PARAM_ENABLE_GAME) == false)
 				{
-					_lobby.showPreInitCashGame(false, params.getUtfString('title'));
+					_lobby.showPreInitCashGame(false, params.getUtfString(Parametrs.PARAM_TITLE));
 				}
 
-				if (params.getInt('lastTime') > 0)
+				if (params.getInt(Parametrs.PARAM_LAST_TIME) > 0)
 				{
-					_lobby.whiteGame.show(params.getInt('lastTime'));
+					_lobby.whiteGame.show(params.getInt(Parametrs.PARAM_LAST_TIME));
 				}
 			}
 			else if (_lobby.gameType == 3)
 			{
-				if (params.getSFSObject('userInfo').getInt('isSetInfo') == 0)
+				if (params.getSFSObject(Parametrs.PARAM_USER_INFO).getInt(Parametrs.PARAM_IS_SET_INFO) == 0)
 				{
-					_lobby.showPreInitCashGame(true ,params.getUtfString('title'));
+					_lobby.showPreInitCashGame(true ,params.getUtfString(Parametrs.PARAM_TITLE));
 				}
 				else
 				{
-					_lobby.tournament.initState(params.getSFSObject('tournament'));
+					_lobby.tournament.initState(params.getSFSObject(Parametrs.PARAM_TOURNAMENT));
 				}
 			}
 
 			_lobby._UserMenu.btnEnable(_lobby.gameType);
 
-			_lobby.setUserInfo( params.getSFSObject('userInfo'));
+			_lobby.setUserInfo( params.getSFSObject(Parametrs.PARAM_USER_INFO));
 
-			_lobby.joinPublicRoom.init(_lobby.gameType, params.getSFSArray('rooms'), params.getSFSObject('myActiveRoom'));
+			_lobby.joinPublicRoom.init(_lobby.gameType, params.getSFSArray(Parametrs.PARAM_ROOMS), params.getSFSObject(Parametrs.PARAM_MY_ACTIVE_ROOM));
 
-			if(params.getSFSObject('myRoom'))
+			if(params.getSFSObject(Parametrs.PARAM_MY_ROOM))
 			{
-				_lobby.tableOfRooms.init( params.getSFSArray('roomsList'), _lobby.gameType  );
+				_lobby.tableOfRooms.init( params.getSFSArray(Parametrs.PARAM_ROOMS_LIST), _lobby.gameType  );
 			}
 			_lobby._ChangeRoomType.setActiveTab(1);
-			updateOnlinePlayers( params.getSFSObject('userCount').getInt('value').toString());
+			updateOnlinePlayers( params.getSFSObject(Parametrs.PARAM_USER_COUNT).getInt(Parametrs.PARAM_VALUE).toString());
 			_lobby.hideProgress();
 		}
 
@@ -119,7 +120,7 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 		public static function responseJoinRoom(params:ISFSObject):void
 		{
 			trace(params.getDump());
-			var code:int = params.getInt("code");
+			var code:int = params.getInt(Parametrs.PARAM_CODE);
 
 			if (_lobby.windEnterPass) // join private room
 			{
@@ -164,12 +165,12 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 
 		public static function busyRoom(param:ISFSObject):void
 		{
-			_lobby.tableOfRooms.update(param, 'busy');
+			_lobby.tableOfRooms.update(param, Parametrs.PARAM_BUSY);
 		}
 
 		public static function freeRoom(param:ISFSObject):void
 		{
-			_lobby.tableOfRooms.update(param, 'free');
+			_lobby.tableOfRooms.update(param, Parametrs.PARAM_FREE);
 		}
 
 		public static function updateGameHistory(param:ISFSObject):void
@@ -204,15 +205,15 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 			trace(params.getDump());
 			_lobby.hideProgress();
 
-			if (params.containsKey('freePlace'))
+			if (params.containsKey(Parametrs.PARAM_FREE_PLACE))
 			{
-				var data:ISFSObject = params.getSFSObject('freePlace');
-				_lobby.joinPublicRoom.freePlace(data.getInt('level'), data.getUtfString('type'), data.getInt('count'));
+				var data:ISFSObject = params.getSFSObject(Parametrs.PARAM_FREE_PLACE);
+				_lobby.joinPublicRoom.freePlace(data.getInt(Parametrs.PARAM_LEVEL), data.getUtfString(Parametrs.PARAM_TYPE), data.getInt(Parametrs.PARAM_COUNT));
 			}
 
-			if (params.containsKey('code'))
+			if (params.containsKey(Parametrs.PARAM_CODE))
 			{
-				switch (params.getInt('code'))
+				switch (params.getInt(Parametrs.PARAM_CODE))
 				{
 					case 1:	 _lobby.showAlert('????? ?? ????? ????????? ????? ????????'); 	break;
 					case 2:	 _lobby.showAlert('????? ????????? ???????');	break;
@@ -220,7 +221,7 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 			}
 			else
 			{
-				_lobby.joinPublicRoom.takePlace(params.getInt('level'), params.getUtfString('type'), params.getInt('count'));
+				_lobby.joinPublicRoom.takePlace(params.getInt(Parametrs.PARAM_LEVEL), params.getUtfString(Parametrs.PARAM_TYPE), params.getInt(Parametrs.PARAM_COUNT));
 			}
 		}
 
@@ -228,18 +229,18 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 		{
 			trace(params.getDump());
 			_lobby.hideProgress();
-			_lobby.joinPublicRoom.freePlace(params.getInt('level'), params.getUtfString('type'), params.getInt('count'));
+			_lobby.joinPublicRoom.freePlace(params.getInt(Parametrs.PARAM_LEVEL), params.getUtfString(Parametrs.PARAM_TYPE), params.getInt(Parametrs.PARAM_COUNT));
 		}
 
 		public static function userPlaceAction(params:ISFSObject):void
 		{
 			trace(params.getDump());
-			_lobby.joinPublicRoom.placeIcon(params.getInt('count'), params.getInt('level'), params.getUtfString('type'));
+			_lobby.joinPublicRoom.placeIcon(params.getInt(Parametrs.PARAM_COUNT), params.getInt(Parametrs.PARAM_LEVEL), params.getUtfString(Parametrs.PARAM_TYPE));
 
-			if (params.containsKey('freePlace'))
+			if (params.containsKey(Parametrs.PARAM_FREE_PLACE))
 			{
-				var data:ISFSObject = params.getSFSObject('freePlace');
-				_lobby.joinPublicRoom.placeIcon(data.getInt('count'), data.getInt('level'), data.getUtfString('type'));
+				var data:ISFSObject = params.getSFSObject(Parametrs.PARAM_FREE_PLACE);
+				_lobby.joinPublicRoom.placeIcon(data.getInt(Parametrs.PARAM_COUNT), data.getInt(Parametrs.PARAM_LEVEL), data.getUtfString(Parametrs.PARAM_TYPE));
 			}
 		}
 
@@ -249,9 +250,9 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 			if (_lobby.createRoomPopUP) _lobby.createRoomPopUP.response(params);
 
 			//add my room to table
-			if (params.containsKey('room'))
+			if (params.containsKey(Parametrs.PARAM_ROOM))
 			{
-				_lobby.tableOfRooms.add(params.getSFSObject("room"));
+				_lobby.tableOfRooms.add(params.getSFSObject(Parametrs.PARAM_ROOM));
 			}
 		}
 
@@ -259,13 +260,13 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 		{
 			trace(params.getDump());
 			var isRestored:Boolean = GameProperties.restore;
-			User.tableID 		= 	params.getSFSObject('gameInfo').getUtfString('roomId');
-			User.username 		= 	params.getSFSObject('clientInfo').getUtfString('username');
-			User.myIndex 		= 	params.getInt('index');
+			User.tableID 		= 	params.getSFSObject(Parametrs.PARAM_GAME_INFO).getUtfString(Parametrs.PARAM_ROOM_ID);
+			User.username 		= 	params.getSFSObject(Parametrs.PARAM_CLIENT_INFO).getUtfString(Parametrs.PARAM_USERNAME);
+			User.myIndex 		= 	params.getInt(Parametrs.PARAM_INDEX);
 
-			User.balance     	=   params.getSFSObject('clientInfo').getDouble('balance');
-			User.gameType     	=   params.getInt('gameType');
-			User.bet     		=   params.getSFSObject('gameInfo').getInt('bet');
+			User.balance     	=   params.getSFSObject(Parametrs.PARAM_CLIENT_INFO).getDouble(Parametrs.PARAM_BALANCE);
+			User.gameType     	=   params.getInt(Parametrs.PARAM_GAME_TYPE);
+			User.bet     		=   params.getSFSObject(Parametrs.PARAM_GAME_INFO).getInt(Parametrs.PARAM_BET);
 
 			if (isRestored == false)
 			{
@@ -280,7 +281,7 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 		public static function initGame(params:ISFSObject):void
 		{
 			trace(params.getDump());
-			if (params.getInt('gameType') != 2)
+			if (params.getInt(Parametrs.PARAM_GAME_TYPE) != 2)
 			{
 				_game.mcChat.visible = false;
 			}
@@ -288,25 +289,25 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 			GameSound.play("startGame");
 
 			_game.infoBar.updateBalance(User.balance);
-			_game.infoBar.updateBet(params.getSFSObject('gameInfo').getDouble('bet'));
+			_game.infoBar.updateBet(params.getSFSObject(Parametrs.PARAM_GAME_INFO).getDouble(Parametrs.PARAM_BET));
 
-			_game.gameType = params.getInt('gameType');
+			_game.gameType = params.getInt(Parametrs.PARAM_GAME_TYPE);
 
-			if (params.containsKey('users'))
+			if (params.containsKey(Parametrs.PARAM_USERS))
 			{
-				_game.manager.setPlayersIndex( params.getInt('index'), params.getSFSArray('users') ); // myindex
-				_game.scoresTable.init(params.getSFSObject('gameInfo').getInt('tableType'),params.getSFSObject('gameInfo').getInt('level'), params.getSFSObject('atuzva').getInt('tableIndex'), params.getInt('index'), params.getSFSArray('users'))
+				_game.manager.setPlayersIndex( params.getInt(Parametrs.PARAM_INDEX), params.getSFSArray(Parametrs.PARAM_USERS) ); // myindex
+				_game.scoresTable.init(params.getSFSObject(Parametrs.PARAM_GAME_INFO).getInt(Parametrs.PARAM_TABLE_TYPE),params.getSFSObject(Parametrs.PARAM_GAME_INFO).getInt(Parametrs.PARAM_LEVEL), params.getSFSObject(Parametrs.PARAM_ATUZVA).getInt(Parametrs.PARAM_TABLE_INDEX), params.getInt(Parametrs.PARAM_INDEX), params.getSFSArray(Parametrs.PARAM_USERS))
 			}
 			else
 			{
-				_game.manager.setPlayersIndex( params.getInt('index') ); // myindex
-				_game.scoresTable.init(params.getSFSObject('gameInfo').getInt('tableType'),params.getSFSObject('gameInfo').getInt('level'), params.getSFSObject('atuzva').getInt('tableIndex'), params.getInt('index'))
+				_game.manager.setPlayersIndex( params.getInt(Parametrs.PARAM_INDEX) ); // myindex
+				_game.scoresTable.init(params.getSFSObject(Parametrs.PARAM_GAME_INFO).getInt(Parametrs.PARAM_TABLE_TYPE),params.getSFSObject(Parametrs.PARAM_GAME_INFO).getInt(Parametrs.PARAM_LEVEL), params.getSFSObject(Parametrs.PARAM_ATUZVA).getInt(Parametrs.PARAM_TABLE_INDEX), params.getInt(Parametrs.PARAM_INDEX))
 			}
 
-			startHand(params.getSFSObject('startHand'));
-			oppAction(params.getInt('startClient'));
+			startHand(params.getSFSObject(Parametrs.PARAM_START_HAND));
+			oppAction(params.getInt(Parametrs.PARAM_START_CLIENT));
 
-			_game.infoBar.setInfo(params.getSFSObject('gameInfo').getDouble('bet'), User.balance, _game.gameType);
+			_game.infoBar.setInfo(params.getSFSObject(Parametrs.PARAM_GAME_INFO).getDouble(Parametrs.PARAM_BET), User.balance, _game.gameType);
 
 			Facade.dispatcher.dispatch(GameEvent.GAME_INIT);
 		}
@@ -316,43 +317,43 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 			trace(params.getDump());
 			_game.updateHandStatus();
 
-			var cards:Array = params.getUtfStringArray('cards');
-			var trump:String = (params.getUtfString('trump'))?params.getUtfString('trump'):'';
+			var cards:Array = params.getUtfStringArray(Parametrs.PARAM_CARDS);
+			var trump:String = (params.getUtfString(Parametrs.PARAM_TRUMP))?params.getUtfString(Parametrs.PARAM_TRUMP):'';
 
 			_game.manager.resetAutoActionVars();
 			_game.manager.distribute(cards, trump);
 
-			if (params.getSFSObject('order') != null)
+			if (params.getSFSObject(Parametrs.PARAM_ORDER) != null)
 			{
-				_game.setOrder( params.getSFSObject('order').getInt('max'), params.getSFSObject('order').getInt('restrict'), params.getSFSObject('order').getInt('fill'), params.getSFSObject('order').getInt('autoOrder') );
+				_game.setOrder( params.getSFSObject(Parametrs.PARAM_ORDER).getInt(Parametrs.PARAM_MAX), params.getSFSObject(Parametrs.PARAM_ORDER).getInt(Parametrs.PARAM_RESTRICT), params.getSFSObject(Parametrs.PARAM_ORDER).getInt(Parametrs.PARAM_FILL), params.getSFSObject(Parametrs.PARAM_ORDER).getInt(Parametrs.PARAM_AUTO_ORDER) );
 			}
-			else if (params.getSFSObject('orderTrump') != null)
+			else if (params.getSFSObject(Parametrs.PARAM_ORDER_TRUMP) != null)
 			{
-				_game.setOrderTrump(params.getSFSObject('orderTrump').getUtfString('autoOrderTrump'));
-			}
-
-			_game.currentHand = params.getInt('currentHand');
-
-			if (params.getSFSObject('partItem'))
-			{
-				_game.scoresTable.setOrderResult(params.getSFSObject('partItem'));
+				_game.setOrderTrump(params.getSFSObject(Parametrs.PARAM_ORDER_TRUMP).getUtfString(Parametrs.PARAM_AUTO_ORDER_TRUMP));
 			}
 
-			_game.manager.setDealer(params.getInt('dealer'));
+			_game.currentHand = params.getInt(Parametrs.PARAM_CURRENT_HAND);
+
+			if (params.getSFSObject(Parametrs.PARAM_PART_ITEM))
+			{
+				_game.scoresTable.setOrderResult(params.getSFSObject(Parametrs.PARAM_PART_ITEM));
+			}
+
+			_game.manager.setDealer(params.getInt(Parametrs.PARAM_DEALER));
 		}
 
 		public static function endGame(params:ISFSObject):void
 		{
 			trace(params.getDump());
-			if (params.getSFSObject('partItem'))
+			if (params.getSFSObject(Parametrs.PARAM_PART_ITEM))
 			{
-				_game.scoresTable.setOrderResult(params.getSFSObject('partItem'));
+				_game.scoresTable.setOrderResult(params.getSFSObject(Parametrs.PARAM_PART_ITEM));
 			}
 
 			_game.gameTimer.disable();
 
 			_game.endGameAdd(params);
-			User.balance = params.getDouble('balance');
+			User.balance = params.getDouble(Parametrs.PARAM_BALANCE);
 			_game.infoBar.updateBalance(User.balance);
 		}
 
@@ -361,25 +362,25 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 			trace(params.getDump());
 			_game.gameTimer.disable();
 
-			var index:int = params.getInt('index');
-			var move:ISFSObject = params.getSFSObject('move');
-			var card:ISFSObject = params.getSFSObject('card');
-			var starthand:ISFSObject = params.getSFSObject('startHand');
+			var index:int = params.getInt(Parametrs.PARAM_INDEX);
+			var move:ISFSObject = params.getSFSObject(Parametrs.PARAM_MOVE);
+			var card:ISFSObject = params.getSFSObject(Parametrs.PARAM_CARD);
+			var starthand:ISFSObject = params.getSFSObject(Parametrs.PARAM_START_HAND);
 
-			if (params.getBool('oppMove'))
+			if (params.getBool(Parametrs.PARAM_OPP_MOVE))
 			{
 				_game.manager.oppMove(index, card);
 			}
 
 			if(move)
 			{
-				setMove( move.getUtfStringArray('disabledCards'), move.getBool('firstMove'), move.getSFSObject('autoMoveCard'));
+				setMove( move.getUtfStringArray(Parametrs.PARAM_DISABLED_CARDS), move.getBool(Parametrs.PARAM_FIRST_MOVE), move.getSFSObject(Parametrs.PARAM_AUTO_MOVE_CARD));
 			}
 
-			if (params.containsKey('winIndex'))
+			if (params.containsKey(Parametrs.PARAM_WIN_INDEX))
 			{
-				var winIndex	:	int = params.getInt('winIndex');
-				var taken		:	int = params.getInt('taken');
+				var winIndex	:	int = params.getInt(Parametrs.PARAM_WIN_INDEX);
+				var taken		:	int = params.getInt(Parametrs.PARAM_TAKEN);
 
 				_game.manager.setCurrentOrder(taken, winIndex);
 			}
@@ -428,98 +429,98 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 		{
 			trace(params.getDump());
 
-			_game.gameType = params.getInt('gameType');
+			_game.gameType = params.getInt(Parametrs.PARAM_GAME_TYPE);
 
-			if (params.getInt('gameType') != 2) _game.mcChat.visible = false;
+			if (params.getInt(Parametrs.PARAM_GAME_TYPE) != 2) _game.mcChat.visible = false;
 
-			_game.currentHand = params.getInt('currentHand');
+			_game.currentHand = params.getInt(Parametrs.PARAM_CURRENT_HAND);
 
-			if (params.containsKey('users'))
+			if (params.containsKey(Parametrs.PARAM_USERS))
 			{
 				trace('resss');
-				_game.manager.setPlayersIndex( params.getInt('index'), params.getSFSArray('users') ); // myindex
-				_game.scoresTable.init(params.getSFSObject('gameInfo').getInt('tableType'),params.getSFSObject('gameInfo').getInt('level'), params.getInt('tableIndex'), params.getInt('index'), params.getSFSArray('users'))
+				_game.manager.setPlayersIndex( params.getInt(Parametrs.PARAM_INDEX), params.getSFSArray(Parametrs.PARAM_USERS) ); // myindex
+				_game.scoresTable.init(params.getSFSObject(Parametrs.PARAM_GAME_INFO).getInt(Parametrs.PARAM_TABLE_TYPE),params.getSFSObject(Parametrs.PARAM_GAME_INFO).getInt(Parametrs.PARAM_LEVEL), params.getInt(Parametrs.PARAM_TABLE_INDEX), params.getInt(Parametrs.PARAM_INDEX), params.getSFSArray(Parametrs.PARAM_USERS))
 			}
 			else
 			{
-				_game.manager.setPlayersIndex( params.getInt('index') ); // myindex
-				_game.scoresTable.init(params.getSFSObject('gameInfo').getInt('tableType'),params.getSFSObject('gameInfo').getInt('level'), params.getInt('tableIndex'), params.getInt('index'))
+				_game.manager.setPlayersIndex( params.getInt(Parametrs.PARAM_INDEX) ); // myindex
+				_game.scoresTable.init(params.getSFSObject(Parametrs.PARAM_GAME_INFO).getInt(Parametrs.PARAM_TABLE_TYPE),params.getSFSObject(Parametrs.PARAM_GAME_INFO).getInt(Parametrs.PARAM_LEVEL), params.getInt(Parametrs.PARAM_TABLE_INDEX), params.getInt(Parametrs.PARAM_INDEX))
 			}
 
-			//_manager.setPlayersIndex( params.getInt('index') ); // myindex
+			//_manager.setPlayersIndex( params.getInt(Parametrs.PARAM_INDEX) ); // myindex
 
 
-			_game.scoresTable.restore(params.getSFSObject('resultTable'), _game.currentHand);
+			_game.scoresTable.restore(params.getSFSObject(Parametrs.PARAM_PARAM_RESULT_TABLE), _game.currentHand);
 
-			_game.manager.distribute(params.getUtfStringArray('cards'), params.getUtfString('trump'));
-			_game.manager.restoreLastMoveCards(params.getSFSArray('lastMoveCards'));
+			_game.manager.distribute(params.getUtfStringArray(Parametrs.PARAM_CARDS), params.getUtfString(Parametrs.PARAM_TRUMP));
+			_game.manager.restoreLastMoveCards(params.getSFSArray(Parametrs.PARAM_LAST_MOVE_CARDS));
 
-			_game.manager.setDealer(params.getInt('dealer'));
+			_game.manager.setDealer(params.getInt(Parametrs.PARAM_DEALER));
 
-			_game.infoBar.setInfo(params.getSFSObject('gameInfo').getDouble('bet'), User.balance, _game.gameType);
+			_game.infoBar.setInfo(params.getSFSObject(Parametrs.PARAM_GAME_INFO).getDouble(Parametrs.PARAM_BET), User.balance, _game.gameType);
 
 			/*********MOVED CARDS RESTORE*******************/
-			for (var i:int = 0; i < params.getSFSArray('oppMoves').size(); i++)
+			for (var i:int = 0; i < params.getSFSArray(Parametrs.PARAM_OPP_MOVES).size(); i++)
 			{
-				var actionMoves:ISFSObject = params.getSFSArray('oppMoves').getSFSObject(i);
+				var actionMoves:ISFSObject = params.getSFSArray(Parametrs.PARAM_OPP_MOVES).getSFSObject(i);
 
-				if (actionMoves.getInt('index') != params.getInt('index'))
+				if (actionMoves.getInt(Parametrs.PARAM_INDEX) != params.getInt(Parametrs.PARAM_INDEX))
 				{
-					_game.manager.oppMove(actionMoves.getInt('index'), actionMoves.getSFSObject('card'));
+					_game.manager.oppMove(actionMoves.getInt(Parametrs.PARAM_INDEX), actionMoves.getSFSObject(Parametrs.PARAM_CARD));
 				}
 				else
 				{
-					_game.manager.oppMove(actionMoves.getInt('index'), actionMoves.getSFSObject('card'));
+					_game.manager.oppMove(actionMoves.getInt(Parametrs.PARAM_INDEX), actionMoves.getSFSObject(Parametrs.PARAM_CARD));
 				}
 			}
 
 
-			_game.updateHandStatus(params.getInt('handStatus'));
+			_game.updateHandStatus(params.getInt(Parametrs.PARAM_HAND_STATUS));
 
 
 			/*****************BOARD ORDER RESTORE ***********/
 			for (var index:int = 1; index <= 4; index++)
 			{
-				if (params.getSFSObject(index.toString()).containsKey('order') )
+				if (params.getSFSObject(index.toString()).containsKey(Parametrs.PARAM_ORDER) )
 				{
-					updateOrder(index , params.getSFSObject(index.toString()).getInt('order'), null, null, params.getInt('handStatus'));
+					updateOrder(index , params.getSFSObject(index.toString()).getInt(Parametrs.PARAM_ORDER), null, null, params.getInt(Parametrs.PARAM_HAND_STATUS));
 				}
 
-				if (params.getSFSObject(index.toString()).getInt('taken'))
+				if (params.getSFSObject(index.toString()).getInt(Parametrs.PARAM_TAKEN))
 				{
-					_game.manager.setCurrentOrder(params.getSFSObject(index.toString()).getInt('taken'), index);
+					_game.manager.setCurrentOrder(params.getSFSObject(index.toString()).getInt(Parametrs.PARAM_TAKEN), index);
 				}
 
-				if (params.getSFSObject(index.toString()).containsKey('type'))
+				if (params.getSFSObject(index.toString()).containsKey(Parametrs.PARAM_TYPE))
 				{
-					trace('tt:' + params.getSFSObject(index.toString()).getInt('type'))
-					switchUser(index, params.getSFSObject(index.toString()).getInt('type'));
+					trace('tt:' + params.getSFSObject(index.toString()).getInt(Parametrs.PARAM_TYPE))
+					switchUser(index, params.getSFSObject(index.toString()).getInt(Parametrs.PARAM_TYPE));
 				}
 			}
 
 
 			/******MY ACTION RESTORE**********************/
-			if (params.getSFSObject('move')) // svlis agdegan (minicheba)
+			if (params.getSFSObject(Parametrs.PARAM_MOVE)) // svlis agdegan (minicheba)
 			{
-				var disCard:Array = params.getSFSObject('move').getUtfStringArray('disabledCards');
-				var firstMove:Boolean = params.getSFSObject('move').getBool('firstMove');
+				var disCard:Array = params.getSFSObject(Parametrs.PARAM_MOVE).getUtfStringArray(Parametrs.PARAM_DISABLED_CARDS);
+				var firstMove:Boolean = params.getSFSObject(Parametrs.PARAM_MOVE).getBool(Parametrs.PARAM_FIRST_MOVE);
 
-				setMove(disCard, firstMove, params.getSFSObject('move').getSFSObject('autoMoveCard'));
+				setMove(disCard, firstMove, params.getSFSObject(Parametrs.PARAM_MOVE).getSFSObject(Parametrs.PARAM_AUTO_MOVE_CARD));
 			}
-			else if (params.getSFSObject('orderTrump')) // kozeris cxadebis agdgena
+			else if (params.getSFSObject(Parametrs.PARAM_ORDER_TRUMP)) // kozeris cxadebis agdgena
 			{
-				_game.setOrderTrump(params.getSFSObject('orderTrump').getUtfString('autoOrderTrump'));
+				_game.setOrderTrump(params.getSFSObject(Parametrs.PARAM_ORDER_TRUMP).getUtfString(Parametrs.PARAM_AUTO_ORDER_TRUMP));
 			}
-			else if (params.getSFSObject('order')) // cxadebis agdgena
+			else if (params.getSFSObject(Parametrs.PARAM_ORDER)) // cxadebis agdgena
 			{
-				var max:int = params.getSFSObject('order').getInt('max');
-				var restrict:int = params.getSFSObject('order').getInt('restrict');
-				var fill:int = params.getSFSObject('order').getInt('fill');
+				var max:int = params.getSFSObject(Parametrs.PARAM_ORDER).getInt(Parametrs.PARAM_MAX);
+				var restrict:int = params.getSFSObject(Parametrs.PARAM_ORDER).getInt(Parametrs.PARAM_RESTRICT);
+				var fill:int = params.getSFSObject(Parametrs.PARAM_ORDER).getInt(Parametrs.PARAM_FILL);
 
-				_game.setOrder( max, restrict, fill, params.getSFSObject('order').getInt('autoOrder'));
+				_game.setOrder( max, restrict, fill, params.getSFSObject(Parametrs.PARAM_ORDER).getInt(Parametrs.PARAM_AUTO_ORDER));
 			}
 
-			_game.gameTimer.restore(params.getInt('timer'), _game.manager.getPlayerPos( params.getInt('activePlayer') ) );
+			_game.gameTimer.restore(params.getInt(Parametrs.PARAM_TIMER), _game.manager.getPlayerPos( params.getInt(Parametrs.PARAM_ACTIVE_PLAYER) ) );
 
 			Facade.dispatcher.dispatch(GameEvent.GAME_INIT);
 		}
@@ -567,7 +568,7 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 
 		public static function tourUpdateActiveUsers(param:ISFSObject):void
 		{
-			_lobby.tournament.running.updateOnlinePlayers(param.getInt('activePlayers'));
+			_lobby.tournament.running.updateOnlinePlayers(param.getInt(Parametrs.PARAM_ACTIVE_PLAYERS));
 		}
 
 		public static function tourUpdateList(param:ISFSObject):void
@@ -594,11 +595,11 @@ import com.smartfoxserver.v2.entities.data.ISFSObject;
 		{
 			if (order != null)
 			{
-				_game.setOrder( order.getInt('max'), order.getInt('restrict'), order.getInt('fill'), order.getInt('autoOrder'));
+				_game.setOrder( order.getInt(Parametrs.PARAM_MAX), order.getInt(Parametrs.PARAM_RESTRICT), order.getInt(Parametrs.PARAM_FILL), order.getInt(Parametrs.PARAM_AUTO_ORDER));
 			}
 			else if(move != null)
 			{
-				setMove( move.getUtfStringArray('disabledCards'), move.getBool('firstMove'), move.getSFSObject('autoMoveCard')  );
+				setMove( move.getUtfStringArray(Parametrs.PARAM_DISABLED_CARDS), move.getBool(Parametrs.PARAM_FIRST_MOVE), move.getSFSObject(Parametrs.PARAM_AUTO_MOVE_CARD)  );
 			}
 
 			_game.updateHandStatus(handStatus);

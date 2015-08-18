@@ -1,7 +1,8 @@
 package com.jokerbros.joker.lobby.tournament 
 {
 	import com.jokerbros.joker.connector.Connector;
-	import com.jokerbros.joker.events.TournamentEvent;
+	import com.jokerbros.joker.events.LobbyEvent;
+	import com.jokerbros.joker.Facade.Facade;
 	import com.jokerbros.joker.lobby.items.TourRatingItem;
 	import com.smartfoxserver.v2.entities.data.ISFSArray;
 	import com.smartfoxserver.v2.entities.data.ISFSObject;
@@ -232,18 +233,18 @@ package com.jokerbros.joker.lobby.tournament
 				}
 				else  if (params.getInt('code') == 1)
 				{
-					dispatchEvent(new TournamentEvent(TournamentEvent.ALERT, 'თქვენ არ გაქვთ საკმარისი ქულა ტურნირის \n გასაგრძელებლად.') )
+					Facade.dispatcher.dispatch(LobbyEvent.TOURNAMENT_ALERT, 'თქვენ არ გაქვთ საკმარისი ქულა ტურნირის \n გასაგრძელებლად.');
 					initPlay(Running.STATUS_SUCCESS)
 				}
 				else
 				{
-					dispatchEvent(new TournamentEvent(TournamentEvent.ALERT, 'მოხდა ტექნიკური შეცდომა.') )
+					Facade.dispatcher.dispatch(LobbyEvent.TOURNAMENT_ALERT, 'მოხდა ტექნიკური შეცდომა.');
 					initPlay(Running.STATUS_SUCCESS)
 				}
 			}
 			else
 			{
-				dispatchEvent(new TournamentEvent(TournamentEvent.ALERT, 'მოხდა ტექნიკური შეცდომა.' ) )
+				Facade.dispatcher.dispatch(LobbyEvent.TOURNAMENT_ALERT, 'მოხდა ტექნიკური შეცდომა.');
 				initPlay(Running.STATUS_SUCCESS)
 			}
 			
@@ -285,13 +286,13 @@ package com.jokerbros.joker.lobby.tournament
 				}
 				else 
 				{
-					dispatchEvent(new TournamentEvent(TournamentEvent.ALERT, 'მოხდა ტექნიკური შეცდომა.') )
+					Facade.dispatcher.dispatch(LobbyEvent.TOURNAMENT_ALERT, 'მოხდა ტექნიკური შეცდომა.');
 					initWhiteOpp()
 				}
 			}
 			else
 			{
-				dispatchEvent(new TournamentEvent(TournamentEvent.ALERT, 'მოხდა ტექნიკური შეცდომა.') )
+				Facade.dispatcher.dispatch(LobbyEvent.TOURNAMENT_ALERT, 'მოხდა ტექნიკური შეცდომა.');
 				initWhiteOpp()
 			}
 
@@ -414,17 +415,17 @@ package com.jokerbros.joker.lobby.tournament
 		{
 			if(e.target.parent.name == 'mcInfo')
 			{
-				dispatchEvent(new TournamentEvent(TournamentEvent.HOW_DISTRIBUTED, false))
+				Facade.dispatcher.dispatch(LobbyEvent.TOURNAMENT_HOW_DISTRIBUTED, false);
 			}
 			else
 			{
-				dispatchEvent(new TournamentEvent(TournamentEvent.HOW_DISTRIBUTED, _winPlayers))
+				Facade.dispatcher.dispatch(LobbyEvent.TOURNAMENT_HOW_DISTRIBUTED, _winPlayers);
 			}
 		}
 		
 		private function onHowWork(e:MouseEvent):void 
 		{
-			dispatchEvent(new TournamentEvent(TournamentEvent.HOW_WORK, {x:70,y:50}))
+			Facade.dispatcher.dispatch(LobbyEvent.TOURNAMENT_HOW_WORK, {x:70,y:50});
 		}
 		
 		

@@ -1,6 +1,7 @@
 package com.jokerbros.joker.lobby.windows 
 {
-	import com.jokerbros.joker.events.AlertEvent;
+	import com.jokerbros.joker.events.LobbyEvent;
+	import com.jokerbros.joker.Facade.Facade;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	/**
@@ -47,7 +48,7 @@ package com.jokerbros.joker.lobby.windows
 			this.btnClose.removeEventListener(MouseEvent.CLICK, onClose)	
 			this.btnOK.removeEventListener(MouseEvent.CLICK, onClose)
 			
-			dispatchEvent(new AlertEvent(AlertEvent.CLOSE));
+			Facade.dispatcher.dispatch(LobbyEvent.HIDE_ALERT);
 		}
 		
 		public function setMessage(msg:String):void

@@ -1,6 +1,7 @@
 package com.jokerbros.joker.lobby.windows 
 {
-	import com.jokerbros.joker.events.WindGameHistoryEvent;
+	import com.jokerbros.joker.events.LobbyEvent;
+	import com.jokerbros.joker.Facade.Facade;
 	import com.jokerbros.joker.user.User;
 	import com.smartfoxserver.v2.entities.data.*;
 	import com.smartfoxserver.v2.requests.*;
@@ -42,7 +43,7 @@ package com.jokerbros.joker.lobby.windows
 		
 		private function onClose(e:MouseEvent):void 
 		{
-			dispatchEvent(new WindGameHistoryEvent(WindGameHistoryEvent.CLOSE));
+			Facade.dispatcher.dispatch(LobbyEvent.CLOSE_WIND_HELP);
 		}
 		
 		

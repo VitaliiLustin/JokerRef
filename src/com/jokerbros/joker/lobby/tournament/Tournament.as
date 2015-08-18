@@ -1,7 +1,8 @@
 package com.jokerbros.joker.lobby.tournament 
 {
-	import com.jokerbros.joker.events.AlertEvent;
-	import com.jokerbros.joker.events.TournamentEvent;
+	import com.jokerbros.joker.events.LobbyEvent;
+	import com.jokerbros.joker.Facade.Facade;
+	import com.jokerbros.joker.lobby.Lobby;
 	import com.jokerbros.joker.lobby.windows.Alert;
 	import com.jokerbros.joker.lobby.windows.WindPrizeFound;
 	import com.jokerbros.joker.lobby.windows.WindTourRules;
@@ -36,18 +37,13 @@ package com.jokerbros.joker.lobby.tournament
 			Tournament.mcProgress = progress;
 			
 			_list = new List(_tournament.mcList);
-			
 			_running = new Running(_tournament.mcRunning);
-			_running.addEventListener(TournamentEvent.HOW_DISTRIBUTED, showWindPrizeFound);
-			_running.addEventListener(TournamentEvent.HOW_WORK, showWindRules);
-			_running.addEventListener(TournamentEvent.ALERT, showAlert);
-			
 			_registration = new Registration(_tournament.mcStart);
-			_registration.addEventListener(TournamentEvent.HOW_DISTRIBUTED, showWindPrizeFound);
-			_registration.addEventListener(TournamentEvent.HOW_WORK, showWindRules);
-			_registration.addEventListener(TournamentEvent.ALERT, showAlert);
-			
 			_access = new Access(_tournament.mcAccess);
+			
+			Facade.dispatcher.addEventListener(LobbyEvent.TOURNAMENT_HOW_DISTRIBUTED, showWindPrizeFound);
+			Facade.dispatcher.addEventListener(LobbyEvent.TOURNAMENT_HOW_WORK, showWindRules);
+			Facade.dispatcher.addEventListener(LobbyEvent.TOURNAMENT_ALERT, showAlert);
 			
 		}
 		
@@ -103,7 +99,7 @@ package com.jokerbros.joker.lobby.tournament
 		
 		
 		/*----------------------------WINDOWS------------------------------------------------------------------------------------------*/
-		private function showWindRules(e:TournamentEvent = null):void
+		private function showWindRules(e:LobbyEvent = null):void
 		{
 			hideWindRules();
 			
@@ -131,7 +127,7 @@ package com.jokerbros.joker.lobby.tournament
 			}
 		}
 
-		private function showWindPrizeFound(e:TournamentEvent = null):void
+		private function showWindPrizeFound(e:LobbyEvent = null):void
 		{
 			hideWindPrizeFound();
 			
@@ -153,18 +149,19 @@ package com.jokerbros.joker.lobby.tournament
 			}
 		}
 		
-		private function showAlert(e:TournamentEvent):void
+		private function showAlert(e:LobbyEvent):void
 		{
 			var msg:String = e.data.toString();
 			
 			_windAlert = new Alert();
 			_windAlert.y = 100;
 			_windAlert.setMessage( msg );
-			_windAlert.addEventListener(AlertEvent.CLOSE, hideAlert);
+			Facade.dispatcher.addEventListener(LobbyEvent.HIDE_ALERT, hideAlert);
+			
 			_tournament.addChild(_windAlert);
 		}
 		
-		private function hideAlert(e:AlertEvent=null):void
+		private function hideAlert(e:LobbyEvent=null):void
 		{
 			if (_windAlert)
 			{
@@ -172,7 +169,7 @@ package com.jokerbros.joker.lobby.tournament
 				{
 					_tournament.removeChild(_windAlert);
 				}
-				_windAlert.removeEventListener(AlertEvent.CLOSE, hideAlert);
+				Facade.dispatcher.removeEventListener(LobbyEvent.HIDE_ALERT, hideAlert);
 				_windAlert = null;
 			}
 		}
@@ -180,22 +177,10 @@ package com.jokerbros.joker.lobby.tournament
 		public function clear():void
 		{
 			resetAllSatet();
-			
-			if (_running)
-			{
-				_running.addEventListener(TournamentEvent.HOW_DISTRIBUTED, showWindPrizeFound);
-				_running.addEventListener(TournamentEvent.HOW_WORK, showWindRules);
-				_running.addEventListener(TournamentEvent.ALERT, showAlert);
-				_running.clear()
-			}
-			
-			if (_registration)
-			{
-				_registration.addEventListener(TournamentEvent.HOW_DISTRIBUTED, showWindPrizeFound);
-				_registration.addEventListener(TournamentEvent.HOW_WORK, showWindRules);
-				_registration.addEventListener(TournamentEvent.ALERT, showAlert);
-				_registration.clear();
-			}
+				
+			Facade.dispatcher.removeEventListener(LobbyEvent.TOURNAMENT_HOW_DISTRIBUTED, showWindPrizeFound);
+			Facade.dispatcher.removeEventListener(LobbyEvent.TOURNAMENT_HOW_WORK, showWindRules);
+			Facade.dispatcher.removeEventListener(LobbyEvent.TOURNAMENT_ALERT, showAlert);
 			
 			if (_list)
 			{

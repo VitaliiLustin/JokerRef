@@ -1,6 +1,5 @@
 package com.jokerbros.joker.lobby 
 {
-	import com.jokerbros.joker.events.ChangeRoomTypeEvent;
 	import com.jokerbros.joker.events.LobbyEvent;
 	import com.jokerbros.joker.Facade.Facade;
 	import flash.display.MovieClip;
@@ -60,8 +59,7 @@ package com.jokerbros.joker.lobby
 			_tabFun.visible = true;
 			_tabCash.visible = true;
 			
-			Facade.dispatcher.dispatch(LobbyEvent.CHANGE, isActiveTab);
-			//dispatchEvent(new ChangeRoomTypeEvent(ChangeRoomTypeEvent.CHANGE, isActiveTab))
+			Facade.dispatcher.dispatch(LobbyEvent.CHANGE_ROOM_TYPE, isActiveTab);
 		}
 		
 		private function swapIndex(activeMC:String=''):void
@@ -83,15 +81,13 @@ package com.jokerbros.joker.lobby
 			{
 				funTabActive(true);
 				cashTabActive(false);
-				Facade.dispatcher.dispatch(LobbyEvent.CHANGE, 2);
-				//dispatchEvent(new ChangeRoomTypeEvent(ChangeRoomTypeEvent.CHANGE, 2))
+				Facade.dispatcher.dispatch(LobbyEvent.CHANGE_ROOM_TYPE, 2);
 			}
 			else
 			{
 				cashTabActive(true);
 				funTabActive(false);
-				Facade.dispatcher.dispatch(LobbyEvent.CHANGE, 1);
-				//dispatchEvent(new ChangeRoomTypeEvent(ChangeRoomTypeEvent.CHANGE, 1))
+				Facade.dispatcher.dispatch(LobbyEvent.CHANGE_ROOM_TYPE, 1);
 			}
 		}
 		

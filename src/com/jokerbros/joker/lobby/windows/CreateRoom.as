@@ -5,8 +5,9 @@ package  com.jokerbros.joker.lobby.windows
 	 * @author JokerBros
 	 */
 	import com.jokerbros.joker.connector.Connector;
-	import com.jokerbros.joker.events.CreateRoomEvent;
+	import com.jokerbros.joker.events.LobbyEvent;
 	import com.jokerbros.joker.events.RadioPointEvnt;
+	import com.jokerbros.joker.Facade.Facade;
 	import com.jokerbros.joker.user.User;
 	import com.jokerbros.joker.lobby.radio.*;
 	import com.smartfoxserver.v2.entities.data.*;
@@ -121,7 +122,7 @@ package  com.jokerbros.joker.lobby.windows
 		private function onClose(e:MouseEvent):void 
 		{
 			this.btnEventsEnabled(false);
-			dispatchEvent( new CreateRoomEvent( CreateRoomEvent.RESPONSE, false ) );
+			Facade.dispatcher.dispatch(LobbyEvent.ROOM_RESPONSE, false);
 		}
 		
 
@@ -209,7 +210,7 @@ package  com.jokerbros.joker.lobby.windows
 		/*respons manege*/
 		private function createSuccess(roomID:String = '', password:String=''):void 
 		{
-			dispatchEvent( new CreateRoomEvent( CreateRoomEvent.RESPONSE, {roomID:roomID, roomPassword:password } ) );
+			Facade.dispatcher.dispatch(LobbyEvent.ROOM_RESPONSE, {roomID:roomID, roomPassword:password } );
 		}
 		
 		private function showError(message:String):void

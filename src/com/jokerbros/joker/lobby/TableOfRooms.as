@@ -2,7 +2,9 @@ package com.jokerbros.joker.lobby
 {
 	import com.greensock.easing.*;
 	import com.greensock.TweenNano;
+	import com.jokerbros.joker.events.LobbyEvent;
 	import com.jokerbros.joker.events.TableOfRoomsEvent;
+	import com.jokerbros.joker.Facade.Facade;
 	import com.jokerbros.joker.user.User;
 	import com.jokerbros.joker.utils.EDScrollbar;
 	import com.smartfoxserver.v2.entities.data.*;
@@ -164,14 +166,8 @@ package com.jokerbros.joker.lobby
 				}
 				
 				_mcCont.addChild(_roomItem[i])
-
 			}
-			
-			
-			
-			
 		}
-		
 		
 		/*Handlers*/
 		private function onRemoveRoom(e:MouseEvent):void 
@@ -182,24 +178,20 @@ package com.jokerbros.joker.lobby
 				data.putUtfString('roomName', e.currentTarget.parent.roomName);
 				
 			remove(data); 
-			
-			dispatchEvent(new TableOfRoomsEvent(TableOfRoomsEvent.REMOVE_MY_ROOM))
+			Facade.dispatcher.dispatch(LobbyEvent.REMOVE_MY_ROOM);
 		}
 		
 		private function onJoinPublicRoom(e:MouseEvent):void 
 		{
 			
 			removeRoomItemEvents();
-
-			dispatchEvent(new TableOfRoomsEvent(TableOfRoomsEvent.SIT_PUBLIC_ROOM, e.currentTarget.parent))
-			
+			Facade.dispatcher.dispatch(LobbyEvent.SIT_PUBLIC_ROOM, e.currentTarget.parent);
 		}
 		
 		private function onJoinPrivateRoom(e:MouseEvent):void 
 		{
 			removeRoomItemEvents();
-			
-			dispatchEvent(new TableOfRoomsEvent(TableOfRoomsEvent.SIT_RPIVATE_ROOM, e.currentTarget.parent))
+			Facade.dispatcher.dispatch(LobbyEvent.SIT_RPIVATE_ROOM, e.currentTarget.parent);
 		}
 
 		

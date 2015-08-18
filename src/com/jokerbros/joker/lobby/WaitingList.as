@@ -2,7 +2,6 @@ package com.jokerbros.joker.lobby
 {
 	import com.greensock.TweenNano;
 	import com.jokerbros.joker.events.LobbyEvent;
-	import com.jokerbros.joker.events.WaitingListEvent;
 	import com.jokerbros.joker.Facade.Facade;
 	import com.jokerbros.joker.user.User;
 	import flash.display.MovieClip;

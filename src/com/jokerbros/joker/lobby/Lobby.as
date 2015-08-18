@@ -1,17 +1,10 @@
 package  com.jokerbros.joker.lobby
 {
 	import com.jokerbros.joker.connector.Connector;
-	import com.jokerbros.joker.events.AlertEvent;
-	import com.jokerbros.joker.events.ChangeRoomTypeEvent;
-	import com.jokerbros.joker.events.CreateRoomEvent;
 	import com.jokerbros.joker.events.GameEvent;
 	import com.jokerbros.joker.events.JoinRoomEvent;
 	import com.jokerbros.joker.events.LobbyEvent;
 	import com.jokerbros.joker.events.TableOfRoomsEvent;
-	import com.jokerbros.joker.events.WaitingListEvent;
-	import com.jokerbros.joker.events.WindEnterPassEvent;
-	import com.jokerbros.joker.events.WindGameHistoryEvent;
-	import com.jokerbros.joker.events.WindRatingEvent;
 	import com.jokerbros.joker.Facade.Facade;
 	import com.jokerbros.joker.game.GameProperties;
 	import com.jokerbros.joker.game.MainHandler;
@@ -92,10 +85,12 @@ package  com.jokerbros.joker.lobby
 			Facade.dispatcher.addEventListener(LobbyEvent.SHOW_GAME_HISTORY, showGameHistory);
 			Facade.dispatcher.addEventListener(LobbyEvent.SHOW_RATING, showRating);
 			Facade.dispatcher.addEventListener(LobbyEvent.CHANGE_GAME_TYPE, onChangeGameType);
-			Facade.dispatcher.addEventListener(LobbyEvent.CHANGE, onChangeRoomType);
+			Facade.dispatcher.addEventListener(LobbyEvent.CHANGE_ROOM_TYPE, onChangeRoomType);
 			Facade.dispatcher.addEventListener(LobbyEvent.REMOVE_ROOM, removeMyRoom);
-			
-			
+			Facade.dispatcher.addEventListener(LobbyEvent.SIT_PUBLIC_ROOM, onJoinPublicRoom);
+			Facade.dispatcher.addEventListener(LobbyEvent.SIT_RPIVATE_ROOM, onJoinPublicRoom);
+			Facade.dispatcher.addEventListener(LobbyEvent.REMOVE_MY_ROOM, onJoinPublicRoom);
+				
 			initProgress();
 			
 			// init change games tab
@@ -122,23 +117,22 @@ package  com.jokerbros.joker.lobby
 			
 			// init table	
 			_tableOfRooms = new TableOfRooms(mcPrivateTableOfRooms);
-			_tableOfRooms.addEventListener(TableOfRoomsEvent.SIT_PUBLIC_ROOM, onJoinPublicRoom);
-			_tableOfRooms.addEventListener(TableOfRoomsEvent.SIT_RPIVATE_ROOM, onJoinPrivateRoom);
-			_tableOfRooms.addEventListener(TableOfRoomsEvent.REMOVE_MY_ROOM, removeMyRoom);
 			
+			// init table
+			_joinPublicRoom = new JoinPublicRoom(this.mcJoinRoomCash, mcJoinRoomFun);
+			
+			Facade.dispatcher.addEventListener(LobbyEvent.FREE_PLACE, userFreePlace);
+			Facade.dispatcher.addEventListener(LobbyEvent.TAKE_PLACE, userTakePlace);
+			Facade.dispatcher.addEventListener(LobbyEvent.SHOW_BLACK_LIST, showBlackList);
+			Facade.dispatcher.addEventListener(LobbyEvent.SHOW_HELP, showHelp);
+			
+			mcPrivateTableOfRooms.visible = false;
+
 			mcPreInitGame.visible = false;
 			
 			btnCreateRoom.visible = false;
 			btnCreateRoom.addEventListener(MouseEvent.CLICK, onOpenCreateRoomPopUP);
-
-			_joinPublicRoom = new JoinPublicRoom(this.mcJoinRoomCash, mcJoinRoomFun);
-			_joinPublicRoom.addEventListener(JoinRoomEvent.FREE_PLACE, userFreePlace);
-			_joinPublicRoom.addEventListener(JoinRoomEvent.TAKE_PLACE, userTakePlace);
-			_joinPublicRoom.addEventListener(JoinRoomEvent.SHOW_BLACK_LIST, showBlackList);
-			_joinPublicRoom.addEventListener(JoinRoomEvent.SHOW_HELP, showHelp);
 			
-			mcPrivateTableOfRooms.visible = false;
-
 			initGraphics();
 			resizeLobby();
 
@@ -175,25 +169,25 @@ package  com.jokerbros.joker.lobby
 			Connector.send('changeGame', data);
 		}
 
-		private function showBlackList(e:JoinRoomEvent):void 
+		private function showBlackList(e:LobbyEvent):void 
 		{
 			_windBlackList = new WindBlackList();
-			_windBlackList.addEventListener(WindGameHistoryEvent.CLOSE, hideBlackList);
+			Facade.dispatcher.addEventListener(LobbyEvent.CLOSE_WIND_BLACKLIST, hideBlackList);
 			addChild(_windBlackList);
 		}
 		
-		private function showHelp(e:JoinRoomEvent):void 
+		private function showHelp(e:LobbyEvent):void 
 		{
 			_windHelp = new WindHelp();
-			_windHelp.addEventListener(WindGameHistoryEvent.CLOSE, hideHelp);
+			Facade.dispatcher.addEventListener(LobbyEvent.CLOSE_WIND_HELP, hideHelp);
 			addChild(_windHelp);
 		}
 		
-		private function hideBlackList(e:Event):void
+		private function hideBlackList(e:LobbyEvent):void
 		{
 			if (_windBlackList)
 			{
-				_windBlackList.removeEventListener(WindGameHistoryEvent.CLOSE, hideBlackList);
+				Facade.dispatcher.removeEventListener(LobbyEvent.CLOSE_WIND_BLACKLIST, hideBlackList);
 				if (contains(_windBlackList))
 				{
 					removeChild(_windBlackList);
@@ -202,11 +196,11 @@ package  com.jokerbros.joker.lobby
 			}
 		}
 		
-		private function hideHelp(e:Event):void
+		private function hideHelp(e:LobbyEvent):void
 		{
 			if (_windHelp)
 			{
-				_windHelp.removeEventListener(WindGameHistoryEvent.CLOSE, hideBlackList);
+				Facade.dispatcher.removeEventListener(LobbyEvent.CLOSE_WIND_HELP, hideHelp);
 				if (contains(_windHelp))
 				{
 					removeChild(_windHelp);
@@ -215,7 +209,7 @@ package  com.jokerbros.joker.lobby
 			}
 		}
 
-		private function userTakePlace(e:JoinRoomEvent):void 
+		private function userTakePlace(e:GameEvent):void 
 		{
 			showProgress();
 			var data:ISFSObject = new SFSObject();
@@ -225,7 +219,7 @@ package  com.jokerbros.joker.lobby
 			Connector.send('takePlace', data);
 		}
 		
-		private function userFreePlace(e:JoinRoomEvent):void 
+		private function userFreePlace(e:LobbyEvent):void 
 		{
 			showProgress();
 			var data:ISFSObject = new SFSObject();
@@ -237,14 +231,14 @@ package  com.jokerbros.joker.lobby
 		private function showGameHistory(e:LobbyEvent = null):void
 		{
 			_gameHistory = new WindGameHistory();
-			_gameHistory.addEventListener(WindGameHistoryEvent.CLOSE, hideGameHistory);
+			Facade.dispatcher.addEventListener(LobbyEvent.CLOSE_WIND_HISTORY, hideGameHistory);
 			_gameHistory.alpha = 0;
 			addChild(_gameHistory);
 			
 			TweenNano.to(_gameHistory, 0.1, {alpha:1} );
 		}
 		
-		private function hideGameHistory(e:WindGameHistoryEvent = null):void
+		private function hideGameHistory(e:LobbyEvent = null):void
 		{
 			if (_gameHistory)
 			{
@@ -252,7 +246,7 @@ package  com.jokerbros.joker.lobby
 				{
 					removeChild(_gameHistory);
 				}
-				_gameHistory.removeEventListener(WindGameHistoryEvent.CLOSE, hideGameHistory);
+				Facade.dispatcher.removeEventListener(LobbyEvent.CLOSE_WIND_HISTORY, hideGameHistory);
 				_gameHistory = null;
 			}
 		}
@@ -260,14 +254,14 @@ package  com.jokerbros.joker.lobby
 		private function showRating(e:LobbyEvent = null):void
 		{
 			_windRating = new WindRating();
-			_windRating.addEventListener(WindRatingEvent.CLOSE, hideRating);
+			Facade.dispatcher.addEventListener(LobbyEvent.CLOSE_WIND_RATING, hideRating);
 			_windRating.alpha = 0;
 			addChild(_windRating);
 			
 			TweenNano.to(_windRating, 0.1, {alpha:1} );
 		}
 		
-		private function hideRating(e:WindRatingEvent = null):void
+		private function hideRating(e:LobbyEvent = null):void
 		{
 			if (_windRating)
 			{
@@ -275,7 +269,7 @@ package  com.jokerbros.joker.lobby
 				{
 					removeChild(_windRating);
 				}
-				_windRating.removeEventListener(WindRatingEvent.CLOSE, hideRating);
+				Facade.dispatcher.removeEventListener(LobbyEvent.CLOSE_WIND_RATING, hideRating);
 				_windRating = null;
 			}
 		}
@@ -285,16 +279,16 @@ package  com.jokerbros.joker.lobby
 			btnCreateRoom.removeEventListener(MouseEvent.CLICK, onOpenCreateRoomPopUP);
 			
 			_createRoomPopUP = new CreateRoom(_gameType);
-			_createRoomPopUP.addEventListener(CreateRoomEvent.RESPONSE, onResponseCreateRoom);
+			Facade.dispatcher.addEventListener(LobbyEvent.ROOM_RESPONSE, onResponseCreateRoom );
 			_createRoomPopUP.alpha = 0;
 			addChild(_createRoomPopUP);
 			
 			TweenNano.to(_createRoomPopUP, 0.1, {alpha:1} );
 		}
 		
-		private function onResponseCreateRoom(e:CreateRoomEvent):void 
+		private function onResponseCreateRoom(e:LobbyEvent):void 
 		{
-			_createRoomPopUP.removeEventListener(CreateRoomEvent.RESPONSE, onResponseCreateRoom);
+			Facade.dispatcher.removeEventListener(LobbyEvent.ROOM_RESPONSE, onResponseCreateRoom );
 			removeChild(_createRoomPopUP);
 			_createRoomPopUP = null;
 			
@@ -312,7 +306,7 @@ package  com.jokerbros.joker.lobby
 		private function showWindEnterPass(roomID:String):void
 		{
 			_windEnterPass = new WindEnterPass(roomID);
-			_windEnterPass.addEventListener(WindEnterPassEvent.RESPONSE, onResponseWindEnterPass);
+			Facade.dispatcher.addEventListener(LobbyEvent.WIND_ENTER_RESPONSE, onResponseWindEnterPass);
 			_windEnterPass.alpha = 0;
 			addChild(_windEnterPass);
 			
@@ -323,24 +317,24 @@ package  com.jokerbros.joker.lobby
 		{
 			if (_windEnterPass)
 			{
-				_windEnterPass.removeEventListener(WindEnterPassEvent.RESPONSE, onResponseWindEnterPass);
+				Facade.dispatcher.removeEventListener(LobbyEvent.WIND_ENTER_RESPONSE, onResponseWindEnterPass);
 				removeChild(_windEnterPass);
 				_windEnterPass = null;
 			}
 		}
 
-		private function onJoinPublicRoom(e:TableOfRoomsEvent = null):void 
+		private function onJoinPublicRoom(e:LobbyEvent = null):void 
 		{
 			showProgress();
 			joinRoom(e.data.roomName);
 		}
 		
-		private function onJoinPrivateRoom(e:TableOfRoomsEvent):void 
+		private function onJoinPrivateRoom(e:LobbyEvent):void 
 		{
 			showWindEnterPass(e.data.roomName)
 		}
 		
-		private function onResponseWindEnterPass(e:WindEnterPassEvent):void 
+		private function onResponseWindEnterPass(e:LobbyEvent):void 
 		{
 			if (e.data == false)
 			{
@@ -362,7 +356,7 @@ package  com.jokerbros.joker.lobby
 			Connector.send(Connector.SEND_JOIN_ROOM, data);
 		}
 		
-		private function removeMyRoom(e:Event):void 
+		private function removeMyRoom(e:LobbyEvent):void 
 		{
 			Connector.send("removeRoom");
 			_waitingList.hide();
@@ -374,16 +368,16 @@ package  com.jokerbros.joker.lobby
 		{
 			_alert = new Alert();
 			_alert.setMessage(msg);
-			_alert.addEventListener(AlertEvent.CLOSE, hideAlert);
+			Facade.dispatcher.addEventListener(LobbyEvent.HIDE_ALERT, hideAlert);
 			_alert.alpha = 0;
 			addChild(_alert);
 			TweenNano.to(_alert, 0.1, {alpha:1} );
 		}
 		
-		public function hideAlert(e:Event):void
+		public function hideAlert(e:LobbyEvent):void
 		{
 			_tableOfRooms.init();
-			_alert.removeEventListener(AlertEvent.CLOSE, hideAlert);
+			Facade.dispatcher.removeEventListener(LobbyEvent.HIDE_ALERT, hideAlert);
 			removeChild(_alert);
 			_alert = null;
 		}
@@ -454,70 +448,69 @@ package  com.jokerbros.joker.lobby
 			if (_waitingList)
 			{
 				Facade.dispatcher.removeEventListener(LobbyEvent.REMOVE_ROOM, removeMyRoom);
-				//_waitingList.removeEventListener(LobbyEvent.REMOVE_ROOM, removeMyRoom);
 				_waitingList.destroy();
 				_waitingList = null
 			}
 
 			if (_tableOfRooms)
 			{
-				_tableOfRooms.removeEventListener(TableOfRoomsEvent.SIT_PUBLIC_ROOM, onJoinPublicRoom);
-				_tableOfRooms.removeEventListener(TableOfRoomsEvent.SIT_RPIVATE_ROOM, onJoinPrivateRoom);
-				_tableOfRooms.removeEventListener(TableOfRoomsEvent.REMOVE_MY_ROOM, removeMyRoom);
+				Facade.dispatcher.removeEventListener(LobbyEvent.SIT_PUBLIC_ROOM, onJoinPublicRoom);
+				Facade.dispatcher.removeEventListener(LobbyEvent.SIT_RPIVATE_ROOM, onJoinPrivateRoom);
+				Facade.dispatcher.removeEventListener(LobbyEvent.REMOVE_MY_ROOM, removeMyRoom);
 				_tableOfRooms.destroy();
 				_tableOfRooms = null;
 			}
 
 			if (_createRoomPopUP)
 			{
-				_createRoomPopUP.removeEventListener(CreateRoomEvent.RESPONSE, onResponseCreateRoom);
+				Facade.dispatcher.removeEventListener(LobbyEvent.ROOM_RESPONSE, onResponseCreateRoom );
 				_createRoomPopUP = null;
 			}
 			
 			if (_windEnterPass)
 			{
-				_windEnterPass.removeEventListener(WindEnterPassEvent.RESPONSE, onResponseWindEnterPass);
+				Facade.dispatcher.removeEventListener(LobbyEvent.WIND_ENTER_RESPONSE, onResponseWindEnterPass);
 				_windEnterPass = null;
 			}
 			
 			if (_alert)
 			{
-				_alert.removeEventListener(AlertEvent.CLOSE, hideAlert);
+				Facade.dispatcher.removeEventListener(LobbyEvent.HIDE_ALERT, hideAlert);
+				
 				_alert = null;
 			}
 			
 			if (_gameHistory)
 			{
-				_gameHistory.removeEventListener(WindGameHistoryEvent.CLOSE, hideGameHistory);
+				Facade.dispatcher.removeEventListener(LobbyEvent.CLOSE_WIND_HISTORY, hideGameHistory);
 				_gameHistory = null;
 			}
 			
 			if (_windRating)
 			{
-				_windRating.removeEventListener(WindRatingEvent.CLOSE, hideRating);
+				Facade.dispatcher.removeEventListener(LobbyEvent.CLOSE_WIND_RATING, hideRating);
 				_windRating = null;
 			}
 			
 			if (_windBlackList)
 			{
-				_windBlackList.removeEventListener(WindGameHistoryEvent.CLOSE, hideBlackList);
+				Facade.dispatcher.removeEventListener(LobbyEvent.CLOSE_WIND_BLACKLIST, hideBlackList);
 				_windBlackList = null;
 			}
 
 			if (_changeRoomType)
 			{
-				//_changeRoomType.removeEventListener(ChangeRoomTypeEvent.CHANGE, onChangeRoomType);
-				Facade.dispatcher.removeEventListener(LobbyEvent.CHANGE, onChangeRoomType);
+				Facade.dispatcher.removeEventListener(LobbyEvent.CHANGE_ROOM_TYPE, onChangeRoomType);
 				_changeRoomType.destroy();
 				_changeRoomType = null;
 			}
 			
 			if (_joinPublicRoom)
 			{
-				_joinPublicRoom.removeEventListener(JoinRoomEvent.FREE_PLACE, userFreePlace);
-				_joinPublicRoom.removeEventListener(JoinRoomEvent.TAKE_PLACE, userTakePlace);
-				_joinPublicRoom.removeEventListener(JoinRoomEvent.SHOW_BLACK_LIST, showBlackList);
-				_joinPublicRoom.removeEventListener(JoinRoomEvent.SHOW_HELP, showHelp);
+				Facade.dispatcher.removeEventListener(LobbyEvent.FREE_PLACE, userFreePlace);
+				Facade.dispatcher.removeEventListener(LobbyEvent.TAKE_PLACE, userTakePlace);
+				Facade.dispatcher.removeEventListener(LobbyEvent.SHOW_BLACK_LIST, showBlackList);
+				Facade.dispatcher.removeEventListener(LobbyEvent.SHOW_HELP, showHelp);
 				_joinPublicRoom.clear();
 				_joinPublicRoom = null;
 			}
