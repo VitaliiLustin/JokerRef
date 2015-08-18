@@ -102,7 +102,7 @@ package com.jokerbros.joker.game
 				
 				_myIndex = ind;
 
-				_players[ind] = new Player(Player.BOTTOM, _game.playerBottom);
+				_players[ind] = new Player(Player.BOTTOM, _game.playerBottom, _game.cards4);
 							
 				for (var i:int = 0; i < 3; i++) 
 				{
@@ -110,9 +110,9 @@ package com.jokerbros.joker.game
 					else { index.push(tmpInd); tmpInd++; }	
 				}
 				
-				_players[index[0]] = new Player(Player.LEFT,_game.playerLeft);
-				_players[index[1]] = new Player(Player.TOP,_game.playerTop);
-				_players[index[2]] = new Player(Player.RIGHT,_game.playerRight);
+				_players[index[0]] = new Player(Player.LEFT,_game.playerLeft, _game.cards1);
+				_players[index[1]] = new Player(Player.TOP,_game.playerTop, _game.cards2);
+				_players[index[2]] = new Player(Player.RIGHT,_game.playerRight, _game.cards3);
 
 				if (users)
 				{
@@ -175,21 +175,18 @@ package com.jokerbros.joker.game
 						
 						_players[i].setCardPosition(j);
 						_board.addChild(_players[i].cards[j]);
-						if(_players[i].cards[j].cardName == 'cardBack'){_players[i].cards[j].visible = false}
 					}
 					
 					// clear user cur and order value
 					setOrder(-1,i);
 					setCurrentOrder(-1,i)
 				}
-				
-		}
+			}
 			catch (err:Error)
 			{
 				ReportException.send(err.message, 284, 'GameManager' );
 			}
 		}
-		
 		
 		/**
 		 * koziris gamochena dafaze
