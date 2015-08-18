@@ -1,36 +1,36 @@
 package  com.jokerbros.joker.lobby
 {
-import com.jokerbros.joker.connector.Connector;
-import com.jokerbros.joker.events.AlertEvent;
-import com.jokerbros.joker.events.ChangeGameTypeEvent;
-import com.jokerbros.joker.events.ChangeRoomTypeEvent;
-import com.jokerbros.joker.events.CreateRoomEvent;
-import com.jokerbros.joker.events.JoinRoomEvent;
-import com.jokerbros.joker.events.TableOfRoomsEvent;
-import com.jokerbros.joker.events.UserMenuEvent;
-import com.jokerbros.joker.events.WaitingListEvent;
-import com.jokerbros.joker.events.WindEnterPassEvent;
-import com.jokerbros.joker.events.WindGameHistoryEvent;
-import com.jokerbros.joker.events.WindRatingEvent;
-import com.jokerbros.joker.game.GameProperties;
-import com.jokerbros.joker.game.MainHandler;
-import com.jokerbros.joker.lobby.tournament.Tournament;
-import com.jokerbros.joker.lobby.windows.Alert;
-import com.jokerbros.joker.lobby.windows.CreateRoom;
-import com.jokerbros.joker.lobby.windows.WindBlackList;
-import com.jokerbros.joker.lobby.windows.WindEnterPass;
-import com.jokerbros.joker.lobby.windows.WindGameHistory;
-import com.jokerbros.joker.lobby.windows.WindHelp;
-import com.jokerbros.joker.lobby.windows.WindRating;
-import com.jokerbros.joker.user.User;
-import com.smartfoxserver.v2.entities.data.ISFSObject;
-import com.smartfoxserver.v2.entities.data.SFSObject;
+	import com.jokerbros.joker.connector.Connector;
+	import com.jokerbros.joker.events.AlertEvent;
+	import com.jokerbros.joker.events.ChangeRoomTypeEvent;
+	import com.jokerbros.joker.events.CreateRoomEvent;
+	import com.jokerbros.joker.events.JoinRoomEvent;
+	import com.jokerbros.joker.events.LobbyEvent;
+	import com.jokerbros.joker.events.TableOfRoomsEvent;
+	import com.jokerbros.joker.events.WaitingListEvent;
+	import com.jokerbros.joker.events.WindEnterPassEvent;
+	import com.jokerbros.joker.events.WindGameHistoryEvent;
+	import com.jokerbros.joker.events.WindRatingEvent;
+	import com.jokerbros.joker.Facade.Facade;
+	import com.jokerbros.joker.game.GameProperties;
+	import com.jokerbros.joker.game.MainHandler;
+	import com.jokerbros.joker.lobby.tournament.Tournament;
+	import com.jokerbros.joker.lobby.windows.Alert;
+	import com.jokerbros.joker.lobby.windows.CreateRoom;
+	import com.jokerbros.joker.lobby.windows.WindBlackList;
+	import com.jokerbros.joker.lobby.windows.WindEnterPass;
+	import com.jokerbros.joker.lobby.windows.WindGameHistory;
+	import com.jokerbros.joker.lobby.windows.WindHelp;
+	import com.jokerbros.joker.lobby.windows.WindRating;
+	import com.jokerbros.joker.user.User;
+	import com.smartfoxserver.v2.entities.data.ISFSObject;
+	import com.smartfoxserver.v2.entities.data.SFSObject;
 
-import flash.events.Event;
-import flash.events.MouseEvent;
-import flash.net.URLRequest;
-import flash.net.navigateToURL;
-import com.greensock.TweenNano;
+	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.net.URLRequest;
+	import flash.net.navigateToURL;
+	import com.greensock.TweenNano;
 
 	/**
 	 * ...
@@ -88,6 +88,10 @@ import com.greensock.TweenNano;
 			
 			stage.addEventListener(Event.RESIZE, resizeLobby);
 			
+			Facade.dispatcher.addEventListener(LobbyEvent.SHOW_GAME_HISTORY, showGameHistory);
+			Facade.dispatcher.addEventListener(LobbyEvent.SHOW_RATING, showRating);
+			Facade.dispatcher.addEventListener(LobbyEvent.CHANGE_GAME_TYPE, onChangeGameType);
+			
 			initProgress();
 			
 			// init change games tab
@@ -95,16 +99,12 @@ import com.greensock.TweenNano;
 			
 			// init user menu
 			_userMenu = new UserMenu(userMenu);
-			_userMenu.addEventListener(UserMenuEvent.SHOW_GAME_HISTORY, showGameHistory);
-			_userMenu.addEventListener(UserMenuEvent.SHOW_RATING, showRating);
 			
 			//mcWhiteFreeGame
 			_whiteGame = new WhiteGame(mcWhiteGame);
 			
 			// init change game type
 			_changeGameType = new ChangeGameType(changeGameType);
-			_changeGameType.addEventListener(ChangeGameTypeEvent.CHANGE, onChangeGameType);
-			
 			
 			// init change game type
 			_changeRoomType = new ChangeRoomType(changeRoomType);
@@ -127,7 +127,7 @@ import com.greensock.TweenNano;
 			btnCreateRoom.visible = false;
 			btnCreateRoom.addEventListener(MouseEvent.CLICK, onOpenCreateRoomPopUP);
 
-			_joinPublicRoom = new JoinPublicRoom(this.mcJoinRoomCash, this.mcJoinRoomFun);
+			_joinPublicRoom = new JoinPublicRoom(this.mcJoinRoomCash, mcJoinRoomFun);
 			_joinPublicRoom.addEventListener(JoinRoomEvent.FREE_PLACE, userFreePlace);
 			_joinPublicRoom.addEventListener(JoinRoomEvent.TAKE_PLACE, userTakePlace);
 			_joinPublicRoom.addEventListener(JoinRoomEvent.SHOW_BLACK_LIST, showBlackList);
@@ -163,7 +163,7 @@ import com.greensock.TweenNano;
 			
 		}
 		
-		private function onChangeGameType(e:ChangeGameTypeEvent):void 
+		private function onChangeGameType(e:LobbyEvent):void 
 		{
 			showProgress();
 			var data:ISFSObject = new SFSObject();
@@ -230,7 +230,7 @@ import com.greensock.TweenNano;
 			Connector.send('freePlace', data);
 		}
 
-		private function showGameHistory(e:UserMenuEvent = null):void
+		private function showGameHistory(e:LobbyEvent = null):void
 		{
 			_gameHistory = new WindGameHistory();
 			_gameHistory.addEventListener(WindGameHistoryEvent.CLOSE, hideGameHistory);
@@ -253,7 +253,7 @@ import com.greensock.TweenNano;
 			}
 		}
 
-		private function showRating(e:UserMenuEvent = null):void
+		private function showRating(e:LobbyEvent = null):void
 		{
 			_windRating = new WindRating();
 			_windRating.addEventListener(WindRatingEvent.CLOSE, hideRating);
@@ -416,12 +416,18 @@ import com.greensock.TweenNano;
 			mcLobbyProgress.mcModal.height = int(stage.stageHeight + 500);
 		}
 		
-		private function destroy(e:Event = null):void
+		public function destroy():void
 		{
-			if (stage) stage.removeEventListener(Event.RESIZE, resizeLobby);
-			removeEventListener(Event.REMOVED_FROM_STAGE, destroy);
+			if (stage) {
+				stage.removeEventListener(Event.RESIZE, resizeLobby);
+			}
+			
 			btnCreateRoom.removeEventListener(MouseEvent.CLICK, onOpenCreateRoomPopUP);
 			mcPreInitGame.btnPersonalInfo.removeEventListener(MouseEvent.CLICK, goEditPersonalInfo);
+			
+			Facade.dispatcher.removeEventListener(LobbyEvent.SHOW_GAME_HISTORY, showGameHistory);
+			Facade.dispatcher.removeEventListener(LobbyEvent.SHOW_RATING, showRating);
+			Facade.dispatcher.removeEventListener(LobbyEvent.CHANGE_GAME_TYPE, onChangeGameType);
 
 			if (_header)
 			{
@@ -431,15 +437,12 @@ import com.greensock.TweenNano;
 			
 			if (_userMenu)
 			{	
-				_userMenu.removeEventListener(UserMenuEvent.SHOW_GAME_HISTORY, showGameHistory);
-				_userMenu.removeEventListener(UserMenuEvent.SHOW_RATING, showRating);
 				_userMenu.destroy();
 				_userMenu = null;
 			}
 
 			if (_changeGameType)
 			{
-				_changeGameType.removeEventListener(ChangeGameTypeEvent.CHANGE, onChangeGameType);
 				_changeGameType.destroy();
 				_changeGameType = null;
 			}

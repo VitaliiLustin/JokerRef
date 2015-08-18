@@ -46,7 +46,7 @@ package com.jokerbros.joker.game
 		public static const MOVED_WIDTH:int = 80;
 		public static const MOVED_HEIGHT:int = 111;
 		
-		public var cardName:String;
+		private var _cardName:String;
 		public var index:int;
 		public var owner:int;
 		
@@ -71,19 +71,19 @@ package com.jokerbros.joker.game
 		
 		public function Card(cardName:String) 
 		{
-			this.cardName = cardName;
+			_cardName = cardName;
 			
 			try 
 			{
-				var ClassReference:Class = getDefinitionByName(cardName) as Class; 
-				this.card = new ClassReference() as MovieClip;
-				this.card.blendMode = BlendMode.LAYER;	
+				var ClassReference:Class = getDefinitionByName(_cardName) as Class; 
+				card = new ClassReference() as MovieClip;
+				card.blendMode = BlendMode.LAYER;	
 			}
 			catch (err:Error)
 			{
 				ReportException.send(err.message, 96, 'Card' );
 			}
-			addChild(this.card);
+			addChild(card);
 			
 			//this.back = new cardBack();
 			//back.visible = false;
@@ -96,44 +96,43 @@ package com.jokerbros.joker.game
 			shadow.distance = 1; 
 			shadow.angle = 45; 
 			
-			if (cardName == 'cardBack')
+			if (_cardName == 'cardBack')
 			{
 				shadow.alpha = 0.3;	
 			}
 			else
 			{
-				this.card.mcModal.alpha = 1;
+				card.mcModal.alpha = 1;
 				shadow.alpha = 0.7;
 			}
-			this.card.filters = [shadow];
+			card.filters = [shadow];
 
 
-			this.status = 0;
-			this.state = 0;
+			status = 0;
+			state = 0;
 
 			
 			// set size
 		
 			
-			if (this.cardName != "cardBack")
+			if (_cardName != "cardBack")
 			{
-				this.type = this.cardName.substr(0, 1).toString();
-				this.value = int(this.cardName.substring(1, this.cardName.length )); 	
+				type = cardName.substr(0, 1).toString();
+				value = int(_cardName.substring(1, _cardName.length )); 	
 				
 			}
 			
-			card.addEventListener(MouseEvent.MOUSE_OUT, onCardOut)	
-			card.addEventListener(MouseEvent.MOUSE_OVER, onCardOver)
-
+			card.addEventListener(MouseEvent.MOUSE_OUT, onCardOut);
+			card.addEventListener(MouseEvent.MOUSE_OVER, onCardOver);
 		}
 		
 		public function active(act:Boolean=true):void
 		{
 			try 
 			{
-				if (this.cardName != 'cardBack')
+				if (_cardName != 'cardBack')
 				{
-					this.card.mcModal.alpha = 0;	
+					card.mcModal.alpha = 0;	
 				}	
 			}
 			catch (err:Error)
@@ -147,9 +146,9 @@ package com.jokerbros.joker.game
 		{
 			try 
 			{
-				if (this.cardName != 'cardBack')
+				if (_cardName != 'cardBack')
 				{
-					this.card.mcModal.alpha = 1;	
+					card.mcModal.alpha = 1;	
 				}
 			}
 			catch (err:Error)
@@ -166,7 +165,7 @@ package com.jokerbros.joker.game
 			if (_state != CARD_MOVED && cardName != 'cardBack')
 			{
 				var card:MovieClip 	= e.currentTarget as MovieClip;
-					card.y += 10;	
+				card.y += 10;	
 			}
 
 		}
@@ -177,14 +176,14 @@ package com.jokerbros.joker.game
 			if (_state != CARD_MOVED && cardName != 'cardBack')
 			{
 				var card:MovieClip 	= e.currentTarget as MovieClip;
-					card.y -= 10;	
+				card.y -= 10;	
 			}
 		}
 		
 		
 		public function get state():int
 		{
-			return this._state;
+			return _state;
 		}
 		
 		public function set state(value:int):void
@@ -192,10 +191,15 @@ package com.jokerbros.joker.game
 			
 			if (value == CARD_MOVED)
 			{	
-					this.active();
+				active();
 			}
 			
-			this._state = value;
+			_state = value;
+		}
+		
+		public function get cardName():String 
+		{
+			return _cardName;
 		}
 		
 		public function destroy():void
@@ -204,7 +208,6 @@ package com.jokerbros.joker.game
 			card.removeEventListener(MouseEvent.MOUSE_OVER, onCardOver)
 		}
 		
-
 		
 	}
 	

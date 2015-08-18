@@ -11,7 +11,6 @@ package com.jokerbros.joker.game.scoresTable
 	{
 		private var _data			:Object;
 		private var _mc				:MovieClip;
-		private var _line			:MovieClip;
 		private var _playerOrder	:TextField;
 		private var _playerValue	:TextField;
 		
@@ -22,7 +21,15 @@ package com.jokerbros.joker.game.scoresTable
 		public function ScoreItem() 
 		{
 			_mc = this;
-			setData();
+			hideLines();
+		}
+		
+		private function hideLines():void
+		{
+			for (var i:int = 1; i <= TableConstants.PLAYERS_COUNT; i++) 
+			{
+				_mc['line' + i].visible = false;
+			}
 		}
 		
 		public function setNumber(visible:Boolean, num:int):void
@@ -32,15 +39,9 @@ package com.jokerbros.joker.game.scoresTable
 			//lineNumBack.visible = visible;
 		}
 		
-		public function setData(data:Object = null):void
+		public function set data(data:Object):void
 		{
 			_data = data;
-			
-			for (var i:int = 1; i <= TableConstants.PLAYERS_COUNT; i++) 
-			{
-				_line = _mc['line' + i];
-				_line.visible = false;
-			}
 		}
 		
 	}

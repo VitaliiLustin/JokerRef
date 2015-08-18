@@ -7,18 +7,22 @@ package com.jokerbros.joker.events
 	 */
 	public class GameEvent extends Event 
 	{
-		public static const LOGIN:String = "login";
-		public static const GAME_INIT:String = "gameInit";
-		public static const FULL_SCREEN:String = "fullScreen";
-		public static const GAME_TO_LOBBY:String = "game_to_lobby";
-
-
-
+		public static const LOGIN				:String = "login";
+		public static const GAME_INIT			:String = "gameInit";
+		public static const FULL_SCREEN			:String = "fullScreen";
+		public static const GAME_TO_LOBBY		:String = "game_to_lobby";
+		
 		public static const MOVE_FIRST_JOKER	:String = 'MOVE_FIRST_JOKER';
 		public static const MOVE_SECOND_JOKER	:String = 'MOVE_SECOND_JOKER';
 		public static const SET_ORDER			:String = 'SET_ORDER';
 		public static const SET_ORDER_TRUMP		:String = 'SET_ORDER_TRUMP';
-
+		
+		public static const MOVE_MY_CARD		:String = 'moveMyCard';
+		public static const SET_ORDER_NEW		:String = "setOrderNew";
+		public static const SET_ORDER_TRUMP_NEW	:String = "setOrderTrumpNew";
+		
+		public static const OPEN_OPTIONS		:String = "openOptions";
+		
 		public var data: Object;
 		
 		public function GameEvent( type:String, data:Object = null, bubbles:Boolean = false, cancelable:Boolean = false ) 

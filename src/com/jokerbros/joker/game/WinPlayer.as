@@ -62,84 +62,80 @@ package com.jokerbros.joker.game
 			*  action 1 - mojokra, 2 - nije
 			*/
 		   
-		   if (card1.type == "J") {
-			
-			if (card1.jokerAction == 1) {
-			 return card1;
+			if (card1.type == "J") {
+
+				if (card1.jokerAction == 1) {
+					return card1;
+				}
+
+				if (card1.jokerAction == 2) {
+					return card2;
+				}
 			}
-			
-			if (card1.jokerAction == 2) {
-			 return card2;
+
+			if (card2.type == "J") {
+
+				if (card2.jokerAction == 1) {
+					return card2;
+				}
+
+				if (card2.jokerAction == 2) {
+					return card1;
+				}
 			}
-			
-		   }
-		   
-		   if (card2.type == "J") {
-			
-			if (card2.jokerAction == 1) {
-			 return card2;
-			}
-			
-			if (card2.jokerAction == 2) {
-			 return card1;
-			}
-		   }
-		   
-		   /**
+
+			/**
 			* 
 			* TU playeri wamovida jokerit
 			* 
 			* action 3 - magali, 4 - waigos
 			* 
 			* */
-		   
-		   if (card2.type == "J") {
-			
-			if (card2.jokerAction == 3) {
-			 
-			 if (card2.jokerActionValue == trump) {
-			  return card2; 
-			 } 
-			 
-			 if (card1.type == trump) {
-			  return card1;
-			 }
+
+			if (card2.type == "J") {
+
+				if (card2.jokerAction == 3) {
+
+					if (card2.jokerActionValue == trump) {
+						return card2; 
+					} 
+					if (card1.type == trump) {
+						return card1;
+					}
+				}
+
+				if (card2.jokerAction == 4) {
+
+					if (card2.jokerActionValue == card1.type) {
+						return card1;
+					}
+					if (card1.type == trump) {
+						return card1;
+					}
+				}   
 			}
-			
-			if (card2.jokerAction == 4) {
-			 
-			 if (card2.jokerActionValue == card1.type) {
-			  return card1;
-			 }
-			 
-			 if (card1.type == trump) {
-			  return card1;
-			 }
-			 
-			}   
-		   }
-		   
-		   /** tu cvetebi udris ertmanets */
-		   if (card1.type == card2.type) {
-			
-			if (card2.value < card1.value) {
-			 return card1;
+
+			/** tu cvetebi udris ertmanets */
+			if (card1.type == card2.type) {
+
+				if (card2.value < card1.value) {
+					return card1;
+				}
+
+				return card2;    
 			}
-			
-			return card2;    
-		   }
-		   
-		   /** tu mowinaamdegis cveti koziria */
-		   if (card1.type == trump) {
-			 
-			if (card2.jokerAction == 1) {
-			 return card2;
+
+			/** tu mowinaamdegis cveti koziria */
+			if (card1.type == trump) {
+
+				if (card2.jokerAction == 1) {
+					return card2;
+				}
+
+				return card1;
 			}
-			 
-			return card1;
-		   }
-			
-		   return card2;
+
+			return card2;
 		}
 		
 	}

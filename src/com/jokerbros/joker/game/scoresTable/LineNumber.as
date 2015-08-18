@@ -9,13 +9,11 @@ package com.jokerbros.joker.game.scoresTable
 	 */
 	public class LineNumber extends scoreNumber
 	{
-		private var _cont			:MovieClip;
 		private var _number			:TextField;
 		
 		public function LineNumber(id:int) 
 		{
-			_cont = this;
-			_cont.lnumber.text = String(id);
+			lnumber.text = String(id);
 		}		
 	}
 

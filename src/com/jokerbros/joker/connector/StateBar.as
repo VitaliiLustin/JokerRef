@@ -45,7 +45,9 @@ import com.jokerbros.joker.windows.WindowRetryConnection;
 			{
 				Joker.STAGE.addChild(windowRetry);
 			}
-			if(User.soundEnabled) User.soundOn(false);
+			if (User.soundEnabled) {
+				User.soundOn(false);
+			}
 		}
 
 		public function showReductionWind():void

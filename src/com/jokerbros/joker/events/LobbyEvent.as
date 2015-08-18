@@ -10,12 +10,17 @@ package  com.jokerbros.joker.events
 	{
 		
 
-		public static const ROOM_REMOVED:String  = "room_removed";
-		public static const ROOM_CREATED:String = "room_created";
+		public static const ROOM_REMOVED		:String  = "room_removed";
+		public static const ROOM_CREATED		:String = "room_created";
 		
-		public static const START_GAME:String = "start_game";
+		public static const START_GAME			:String = "start_game";
 		
-		public static const INIT_GAME:String = "init_game";
+		public static const INIT_GAME			:String = "init_game";
+		
+		public static const SHOW_GAME_HISTORY	:String = "show_game_history";
+		public static const SHOW_RATING			:String = "show_rating";
+		
+		public static const CHANGE_GAME_TYPE	:String = "changeGameType";
 		
 		public var data: Object;
 		

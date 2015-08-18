@@ -158,8 +158,11 @@ package
 		{
 			if (_lobby!=null)
 			{
-				if (contains( _lobby )) removeChild( _lobby );
+				_lobby.destroy();
 				_lobby.removeEventListener(LobbyEvent.START_GAME, onStartGame);
+				if (contains( _lobby )) {
+					removeChild( _lobby );
+				}
 				_lobby = null;
 			}
 		}
@@ -169,8 +172,10 @@ package
 			if ( _game != null )
 			{
 				_game.destroy();
-				if (contains(_game)) removeChild( _game );
 				_game.removeEventListener(GameEvent.GAME_TO_LOBBY, onGameToLobby);
+				if (contains(_game)) {
+					removeChild( _game );
+				}
 				_game = null;	
 			}
 		}

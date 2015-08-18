@@ -3,12 +3,10 @@ package com.jokerbros.joker.game
 	import com.jokerbros.joker.connector.Connector;
 	import com.jokerbros.joker.events.EndGameEvent;
 	import com.jokerbros.joker.events.GameEvent;
-	import com.jokerbros.joker.events.GameManagerEvent;
 	import com.jokerbros.joker.events.GameTimerEvent;
 	import com.jokerbros.joker.events.ReturningWindowEvent;
 	import com.jokerbros.joker.Facade.Facade;
 	import com.jokerbros.joker.game.chat.Chat;
-	import com.jokerbros.joker.game.pt.PointTable;
 	import com.jokerbros.joker.game.scoresTable.ScoresTable;
 	import com.jokerbros.joker.user.ReportException;
 	import com.jokerbros.joker.user.User;
@@ -76,17 +74,22 @@ package com.jokerbros.joker.game
 		private function start(e:Event = null):void
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, start);
-			addEventListener(Event.REMOVED_FROM_STAGE, destroyGame);
+			//addEventListener(Event.REMOVED_FROM_STAGE, destroyGame);
 			stage.addEventListener(Event.RESIZE, resizeGame);
+			
+			Facade.dispatcher.addEventListener(GameEvent.MOVE_MY_CARD, onMove);
+			Facade.dispatcher.addEventListener(GameEvent.SET_ORDER_TRUMP_NEW, onOrderTrump);
+			Facade.dispatcher.addEventListener(GameEvent.SET_ORDER_NEW, onOrder);
+			Facade.dispatcher.addEventListener(GameEvent.OPEN_OPTIONS, onReport);
 			
 			mcBoard = this.mcMain.mcBoard;
 			mcBoard.mcDealer.visible = false;
 			mcBoard.mcHandStatus.visible = false;
 			
 			_manager = new GameManager(mcBoard);
-			_manager.addEventListener(GameManagerEvent.MOVE, onMove);
-			_manager.addEventListener(GameManagerEvent.SET_ORDER_TRUMP, onOrderTrump);
-			_manager.addEventListener(GameManagerEvent.SET_ORDER, onOrder);
+			//_manager.addEventListener(GameManagerEvent.MOVE, onMove);
+			//_manager.addEventListener(GameManagerEvent.SET_ORDER_TRUMP, onOrderTrump);
+			//_manager.addEventListener(GameManagerEvent.SET_ORDER, onOrder);
 			
 			_gameTimer = new GameTimer(mcBoard);
 			_gameTimer.addEventListener( GameTimerEvent.MY_END_TIMER, endMyTimer );
@@ -95,7 +98,6 @@ package com.jokerbros.joker.game
 			
 			_infoBar = new InfoBar(mcInfoBar);
 			_options = new Options(mcOptions);
-			_options.addEventListener(Event.OPEN, onReport);
 			
 			_chat = new Chat(mcChat);
 			
@@ -177,7 +179,7 @@ package com.jokerbros.joker.game
 			startHand(params.getSFSObject('startHand'));
 			oppAction(params.getInt('startClient'), 0 );
 			
-			_infoBar.setInfo(params.getSFSObject('gameInfo').getDouble('bet'), User.balance, _gameType)
+			_infoBar.setInfo(params.getSFSObject('gameInfo').getDouble('bet'), User.balance, _gameType);
 		}
 		
 		
@@ -242,7 +244,6 @@ package com.jokerbros.joker.game
 				//_pointTable.setOrderResult(params.getSFSObject('partItem'));
 			}
 				
-			
 		}
 		
 
@@ -262,7 +263,7 @@ package com.jokerbros.joker.game
 			
 			if(move)
 			{
-				this.setMove( move.getUtfStringArray('disabledCards'), move.getBool('firstMove'), move.getSFSObject('autoMoveCard'));
+				setMove( move.getUtfStringArray('disabledCards'), move.getBool('firstMove'), move.getSFSObject('autoMoveCard'));
 			}
 			
 			if (params.containsKey('winIndex'))
@@ -283,21 +284,26 @@ package com.jokerbros.joker.game
 			
 			_manager.checkEndLocalHand();
 			_manager.enableCards(disabledCards, firstMove, autoMoveCard); // aq chasamatebelia card objecti
-			
 		}
 		
-
-		
-		private function onMove(e:GameManagerEvent):void 
+		private function onMove(e:GameEvent):void 
 		{
 			_gameTimer.disable();
 				
 			var data:ISFSObject = new SFSObject();
 				
-			if (e.data.card != null) data.putUtfString('value', e.data.card as String)
-			if (e.data.action != null) data.putInt('action',  int(e.data.action))
-			if (e.data.order != null) data.putUtfString('order', e.data.order as String)
-			if (e.data.auto != null) data.putBool('auto', true);
+			if (e.data.card != null) {
+				data.putUtfString('value', e.data.card as String)
+			}
+			if (e.data.action != null) {
+				data.putInt('action',  int(e.data.action))
+			}
+			if (e.data.order != null) {
+				data.putUtfString('order', e.data.order as String)
+			}
+			if (e.data.auto != null) {
+				data.putBool('auto', true);
+			}
 	
 			Connector.send("move", data);
 		}
@@ -310,7 +316,7 @@ package com.jokerbros.joker.game
 			_manager.showOrderTrump(autoOrderTrump); // set trum val
 		}
 		
-		private function onOrderTrump(e:GameManagerEvent):void 
+		private function onOrderTrump(e:GameEvent):void 
 		{
 			_gameTimer.disable();
 				
@@ -327,7 +333,7 @@ package com.jokerbros.joker.game
 				data.putBool('auto', true);
 			}
 			
-				data.putUtfString('trump',  trump);
+			data.putUtfString('trump',  trump);
 				
 			Connector.send("orderTrump", data);
 			
@@ -348,7 +354,7 @@ package com.jokerbros.joker.game
 			_manager.showOrder(max, restric, fill, autoOrder);
 		}
 		
-		private function onOrder(e:GameManagerEvent):void 
+		private function onOrder(e:GameEvent):void 
 		{
 			_gameTimer.disable();
 			
@@ -489,7 +495,7 @@ package com.jokerbros.joker.game
 		
 		/*-----------------------------------------------------------------------------------------------------------------------------*/
 		/*--------------------------REPORT---------------------------------------------------------------------------------------------*/	
-		private function onReport(e:Event):void 
+		private function onReport(e:GameEvent):void 
 		{
 			resetReport();
 			_report = new SendReport();
@@ -519,9 +525,6 @@ package com.jokerbros.joker.game
 			gameToLobby()	
 		}
 		
-		
-		
-		
 		private function initGraphics():void
 		{
 			FontTools.embed(mcBoard.playerLeft.mcUserInfo.username, FontTools.bpgarial)
@@ -541,34 +544,6 @@ package com.jokerbros.joker.game
 			
 			FontTools.embed(mcBoard.mcHandStatus.label, FontTools.bpgarial)
 			
-		}
-		
-		private function destroyGame(e:Event = null):void
-		{
-			if (e) removeEventListener(Event.REMOVED_FROM_STAGE, destroyGame);
-			if (stage) stage.removeEventListener(Event.RESIZE, resizeGame)
-			
-			try
-			{
-				if(_gameTimer)
-				{
-					_gameTimer.removeEventListener( GameTimerEvent.MY_END_TIMER, endMyTimer ); 
-					_gameTimer.disable();
-					_gameTimer = null;
-				}
-				
-				if (_manager)
-				{
-					_manager.removeEventListener(GameManagerEvent.MOVE, onMove);
-					_manager.removeEventListener(GameManagerEvent.SET_ORDER_TRUMP, onOrderTrump);
-					_manager.removeEventListener(GameManagerEvent.SET_ORDER, onOrder);
-					_manager = null;
-				}
-			}
-			catch (err:Error)
-			{
-				
-			}
 		}
 		
 		private function resizeGame(e:Event=null):void 
@@ -598,15 +573,33 @@ package com.jokerbros.joker.game
 		
 		public function destroy():void
 		{
-			_gameTimer.disable();
+			if (stage) {
+				stage.removeEventListener(Event.RESIZE, resizeGame);
+			}
 			
-			try 
+			try
 			{
-				//_pointTable = null;
+				Facade.dispatcher.removeEventListener(GameEvent.MOVE_MY_CARD, onMove);
+				Facade.dispatcher.removeEventListener(GameEvent.SET_ORDER_TRUMP_NEW, onOrderTrump);
+				Facade.dispatcher.removeEventListener(GameEvent.SET_ORDER_NEW, onOrder);
+				Facade.dispatcher.removeEventListener(GameEvent.OPEN_OPTIONS, onReport);
+				
+				if(_gameTimer)
+				{
+					_gameTimer.removeEventListener( GameTimerEvent.MY_END_TIMER, endMyTimer ); 
+					_gameTimer.disable();
+					_gameTimer = null;
+				}
+				
+				if (_manager)
+				{
+					_manager.destroy();
+					_manager = null;
+				}
 			}
 			catch (err:Error)
 			{
-				ReportException.send(err.message, 798, 'Game' );
+				
 			}
 		}
 		

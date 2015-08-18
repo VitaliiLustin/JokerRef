@@ -105,7 +105,7 @@ package com.jokerbros.joker.game
 				dispatchEvent(new GameTimerEvent(GameTimerEvent.MY_END_TIMER));
 			}
 			
-			this.disable();
+			disable();
 		}
 		
 		private function clearTimer():void
@@ -128,9 +128,8 @@ package com.jokerbros.joker.game
 		
 		public function disable():void 
 		{
-			
-			this.clearTimer();
-			this.clearSound();
+			clearTimer();
+			clearSound();
 			
 			try 
 			{
@@ -158,7 +157,7 @@ package com.jokerbros.joker.game
 				//ReportException.send(err.message, 162, 'GameTimer' );
 			}
 			
-			this.mcMask.x = 0;
+			mcMask.x = 0;
 			
 			_isEnabledSound = false;
 		}
@@ -215,7 +214,6 @@ package com.jokerbros.joker.game
 		
 		private function clearSound():void
 		{
-			
 			try 
 			{
 				if (_sound != null)
@@ -254,7 +252,7 @@ package com.jokerbros.joker.game
 		
 		public function restore(current:int, pos:int):void
 		{
-			this.disable();
+			disable();
 			
 			var oldSec:int = DEFAULT_SECOND - current
 
@@ -283,7 +281,7 @@ package com.jokerbros.joker.game
 				ReportException.send(err.message, 82, 'GameTimer' );
 			}
 			
-			this.mcMask.x = restCalcX(current);
+			mcMask.x = restCalcX(current);
 			
 			TweenNano.to(this.mcMask, _second, { x: -181, ease:Linear.easeNone } );
 			

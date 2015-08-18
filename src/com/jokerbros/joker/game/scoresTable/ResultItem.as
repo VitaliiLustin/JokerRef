@@ -15,19 +15,6 @@ package com.jokerbros.joker.game.scoresTable
 		public function ResultItem() 
 		{
 			_mc = this;
-			
-			setData();
-		}
-		
-		public function setData(data:Object = null):void
-		{
-			_data = data;
-			
-			
-			for (var i:int = 1; i <= TableConstants.PLAYERS_COUNT; i++) 
-			{
-				_scoreTf = _mc['pl' + i + '_score'];
-			}
 		}
 		
 	}

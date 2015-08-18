@@ -10,9 +10,10 @@ package com.jokerbros.joker.utils
 	public class FontTools 
 	{
 		
-		public static var bpgarial:String = new BGPArial().fontName
-		public static var handel:String = new Hanndel().fontName
-		public static var handelRegular:String = new HandelRegular().fontName
+		public static var bpgarial:String = new BGPArial().fontName;
+		public static var arial:String = new Arial().fontName;
+		public static var handel:String = new Hanndel().fontName;
+		public static var handelRegular:String = new HandelRegular().fontName;
 		
 		public function FontTools() 
 		{

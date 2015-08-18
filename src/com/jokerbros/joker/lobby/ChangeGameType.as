@@ -1,13 +1,14 @@
 package com.jokerbros.joker.lobby 
 {
-	import com.jokerbros.joker.events.ChangeGameTypeEvent;
+	import com.jokerbros.joker.events.LobbyEvent;
+	import com.jokerbros.joker.Facade.Facade;
 	import flash.display.MovieClip;
 	import flash.events.MouseEvent;
 	/**
 	 * ...
 	 * @author JokerBros
 	 */
-	public class ChangeGameType extends MovieClip
+	public class ChangeGameType 
 	{
 		
 		private var _mc:MovieClip;
@@ -67,7 +68,8 @@ package com.jokerbros.joker.lobby
 				cashTabActive(false);
 				tourTabActive(false);
 				
-				dispatchEvent(new ChangeGameTypeEvent(ChangeGameTypeEvent.CHANGE, 2))
+				Facade.dispatcher.dispatch(LobbyEvent.CHANGE_GAME_TYPE, 2);
+				//dispatchEvent(new ChangeGameTypeEvent(ChangeGameTypeEvent.CHANGE, 2))
 			}
 			else if(e.currentTarget.name == 'tab_cash')
 			{
@@ -75,7 +77,8 @@ package com.jokerbros.joker.lobby
 				funTabActive(false);
 				tourTabActive(false);
 				
-				dispatchEvent(new ChangeGameTypeEvent(ChangeGameTypeEvent.CHANGE, 1))
+				Facade.dispatcher.dispatch(LobbyEvent.CHANGE_GAME_TYPE, 1);
+				//dispatchEvent(new ChangeGameTypeEvent(ChangeGameTypeEvent.CHANGE, 1))
 			}
 			else if(e.currentTarget.name == 'tab_tour')
 			{
@@ -83,8 +86,8 @@ package com.jokerbros.joker.lobby
 				funTabActive(false);
 				tourTabActive(true);
 				
-				dispatchEvent(new ChangeGameTypeEvent(ChangeGameTypeEvent.CHANGE, 3))
-				
+				//dispatchEvent(new ChangeGameTypeEvent(ChangeGameTypeEvent.CHANGE, 3))
+				Facade.dispatcher.dispatch(LobbyEvent.CHANGE_GAME_TYPE, 3);
 			}
 		}
 		

@@ -21,7 +21,11 @@ package com.jokerbros.joker.game
 		
 		private var _cardsLength:Number;
 		
-		public function set cardsLength(cl:int):void{_cardsLength = cl;	this._cardRot = Math.round( -_cardsLength / 2);	}
+		public function set cardsLength(cl:int):void 
+		{
+			_cardsLength = cl;	
+			_cardRot = Math.round(-_cardsLength / 2);	
+		}
 		
 		private var order:TextField;
 		private var currentOrder:TextField;
@@ -118,7 +122,7 @@ package com.jokerbros.joker.game
 			var yy:Number;
 			var rr:Number;
 			
-			switch (this.owner) 
+			switch (owner) 
 			{
 				case Player.LEFT:		rr = 0;   xx = _cardsPlace.x;    yy = _cardsPlace.y;   break;
 				case Player.TOP:		rr = 0;   xx = _cardsPlace.x;    yy = _cardsPlace.y;   break;

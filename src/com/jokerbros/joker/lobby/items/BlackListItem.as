@@ -1,5 +1,6 @@
 package com.jokerbros.joker.lobby.items 
 {
+	import com.jokerbros.joker.utils.FontTools;
 	import com.smartfoxserver.v2.entities.data.ISFSArray;
 	import flash.text.AntiAliasType;
 	import flash.text.TextFormat;
@@ -12,28 +13,15 @@ package com.jokerbros.joker.lobby.items
 		
 		public function BlackListItem() 
 		{
-			var arialName:String = new BGPArial().fontName;
-			
-			this.username.embedFonts = true;
-			this.username.antiAliasType = AntiAliasType.ADVANCED;
-			this.username.setTextFormat( new TextFormat(arialName) );
-			
-			this.note.embedFonts = true;
-			this.note.antiAliasType = AntiAliasType.ADVANCED;
-			this.note.setTextFormat( new TextFormat(arialName) );
-
-			
+			FontTools.embed(username, FontTools.bpgarial);
+			FontTools.embed(note, FontTools.bpgarial);
 		}
 		
 		public function fill(params:ISFSArray, index:int):void
 		{
-			
-			this.username.text = params.getSFSObject(index).getUtfString('username')
-			this.note.text = params.getSFSObject(index).getUtfString('note')
-			
+			username.text = params.getSFSObject(index).getUtfString('username')
+			note.text = params.getSFSObject(index).getUtfString('note')
 		}
-		
-		
 		
 	}
 

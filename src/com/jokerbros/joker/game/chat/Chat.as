@@ -1,5 +1,6 @@
 package com.jokerbros.joker.game.chat 
 {
+	import com.jokerbros.Parametrs;
 	import flash.display.MovieClip;
 	import flash.display.SimpleButton;
 	import flash.events.*;
@@ -19,7 +20,7 @@ package com.jokerbros.joker.game.chat
 	 */
 	public class Chat 
 	{
-		private const MAX_MSG:int = 30
+		private const MAX_MSG:int = 30;
 		
 		private var _input			:	TextField;
 		private var _chatBox		:	MovieClip;
@@ -31,7 +32,7 @@ package com.jokerbros.joker.game.chat
 		
 		private var _items:Vector.<Item>;
 		
-		private var _mcChat:MovieClip
+		private var _mcChat:MovieClip;
 		
 		public function Chat($mc:MovieClip) 
 		{
@@ -42,7 +43,7 @@ package com.jokerbros.joker.game.chat
 			_mcChat.chatClose.buttonMode = true;
 			_mcChat.chatClose.useHandCursor = true;
 			_mcChat.chatClose.mouseChildren = false;
-			_mcChat.chatClose.addEventListener(MouseEvent.CLICK, openChat)
+			_mcChat.chatClose.addEventListener(MouseEvent.CLICK, openChat);
 			
 			_mcChat.chatOpen.visible = true;
 			_mcChat.chatOpen.oppDisable.visible = false;
@@ -59,26 +60,25 @@ package com.jokerbros.joker.game.chat
 			_power.buttonMode = true;
 			_power.useHandCursor = true;
 			_power.mouseChildren = false;
-			_power.addEventListener(MouseEvent.CLICK, onPower)
+			_power.addEventListener(MouseEvent.CLICK, onPower);
 			_power.gotoAndStop(1);
 
 			_btnSend = _mcChat.chatOpen.btnSend;			
-			_btnSend.addEventListener(MouseEvent.CLICK, onSend)
+			_btnSend.addEventListener(MouseEvent.CLICK, onSend);
 			
 			_minimize = _mcChat.chatOpen.close;
 			_minimize.buttonMode = true;
 			_minimize.useHandCursor = true;
-			_minimize.addEventListener(MouseEvent.CLICK, onMinimize)
+			_minimize.addEventListener(MouseEvent.CLICK, onMinimize);
 			
 			
 			_mcChat.chatClose.newMsg.visible = false;
 			
-			onMinimize()
+			onMinimize();
 			
-			clearContent()
+			clearContent();
 			
-			init()
-			
+			init();
 		}
 		
 		public function init(isOnline:Boolean = true, oppIsOnline:Boolean = true):void
@@ -100,7 +100,7 @@ package com.jokerbros.joker.game.chat
 			_mcChat.chatOpen.visible = false;
 			_mcChat.chatClose.visible = true;
 			
-			_minimize.removeEventListener(MouseEvent.CLICK, onMinimize)
+			_minimize.removeEventListener(MouseEvent.CLICK, onMinimize);
 			
 		}
 		
@@ -129,12 +129,12 @@ package com.jokerbros.joker.game.chat
 			
 			if (_power.currentFrame == 1) // disable chat
 			{
-				_btnSend.removeEventListener(MouseEvent.CLICK, onSend)
+				_btnSend.removeEventListener(MouseEvent.CLICK, onSend);
 				_power.gotoAndStop(2);
 				_input.visible = false; 
 				_mcChat.chatOpen.myChatDisable.visible = true;
 
-				onlineStatus.putBool('status', false);
+				onlineStatus.putBool(Parametrs.PARAM_STATUS, false);
 				
 			}
 			else // enable chat
@@ -150,10 +150,10 @@ package com.jokerbros.joker.game.chat
 				
 				_mcChat.chatOpen.myChatDisable.visible = false;
 
-				onlineStatus.putBool('status', true);  
+				onlineStatus.putBool(Parametrs.PARAM_STATUS, true);  
 			}
 	
-			Connector.send("chatStatus", onlineStatus);
+			Connector.send(Parametrs.PARAM_CHAT_STATUS, onlineStatus);
 		}
 		
 		private function chatSend():void 
@@ -161,12 +161,12 @@ package com.jokerbros.joker.game.chat
 			
 			if (_input.length < 1) return;
 			
-			setMessage(_input.text, true)
+			setMessage(_input.text, true);
 			
 			var sendToServer:ISFSObject = SFSObject.newInstance();
-				sendToServer.putUtfString('msg', _input.text);
+				sendToServer.putUtfString(Parametrs.PARAM_MSG, _input.text);
 				
-			Connector.send("chat",sendToServer);
+			Connector.send(Parametrs.PARAM_CHAT,sendToServer);
 			
 			trace(_input.text)
 			
@@ -177,17 +177,17 @@ package com.jokerbros.joker.game.chat
 		public function updateChatStatus(list:ISFSObject=null):void 
 		{
 			
-			var bool:Boolean = false
-			var count:int = 0
-			var isfsarr:ISFSArray = (list) ? list.getSFSArray('users') : null
+			var bool:Boolean = false;
+			var count:int = 0;
+			var isfsarr:ISFSArray = (list) ? list.getSFSArray(Parametrs.PARAM_USERS) : null;
 			
 			if (isfsarr)
 			{
 				for (var i:int = 0; i < isfsarr.size(); i++) 
 				{
-					if (isfsarr.getSFSObject(i).getBool('status') == true) 
+					if (isfsarr.getSFSObject(i).getBool(Parametrs.PARAM_STATUS) == true) 
 					{
-						count ++
+						count ++;
 					}
 				}
 			}
@@ -199,13 +199,13 @@ package com.jokerbros.joker.game.chat
 			{
 				_mcChat.chatOpen.oppDisable.visible = true;
 				_input.visible = false;
-				_btnSend.removeEventListener(MouseEvent.CLICK, onSend)
+				_btnSend.removeEventListener(MouseEvent.CLICK, onSend);
 			}
 			else // opp enable chat
 			{
 				_mcChat.chatOpen.oppDisable.visible = false;
 				_input.visible = true;
-				_btnSend.addEventListener(MouseEvent.CLICK, onSend)
+				_btnSend.addEventListener(MouseEvent.CLICK, onSend);
 			}
 		}
 		
@@ -219,7 +219,7 @@ package com.jokerbros.joker.game.chat
 			}
 			
 			//setMessage('Bros'+ind +': ' + utfString, false)
-			setMessage('--'+ind +': ' + utfString, false)
+			setMessage('--' + ind +': ' + utfString, false);
 		}
 		
 		public function action(cmd:String, params:ISFSObject):void
@@ -227,14 +227,15 @@ package com.jokerbros.joker.game.chat
 			
 			switch( cmd )
 			{   
-				case "updateChatMessage"			:  updateChatMessage( params.getUtfString('msg'), params.getInt('index') );	                  
-													   break;
-				case "updateChatStatus" 			:  updateChatStatus(params);	 
-													   break;
+				case Parametrs.PARAM_UPDATE_CHAT_MSG: 
+					updateChatMessage( params.getUtfString(Parametrs.PARAM_MSG), params.getInt(Parametrs.PARAM_INDEX) );	                  
+				break;
+				case Parametrs.PARAM_UPDATE_CHAT_STATUS:  
+					updateChatStatus(params);	 
+				break;
 			}
 			
 		}
-		
 		
 		
 		/*-----------------------------------------------------------------------------------------------------------------------------*/
@@ -271,7 +272,7 @@ package com.jokerbros.joker.game.chat
 			
 			if (event.charCode == 13)
 			{
-				this.chatSend();	
+				chatSend();	
 			}
 		}
 		
@@ -281,34 +282,71 @@ package com.jokerbros.joker.game.chat
 			//if tu chemi gagzavnilia mosulia ukna
 			_items.unshift(new Item(msg, isMy));
 			
-			
 			updateContent();
 		}
 		
 		
 		private function clearContent():void
 		{
-			while (_mcChat.chatOpen.mcChatBox.numChildren > 0) _mcChat.chatOpen.mcChatBox.removeChildAt(0);
+			if(_items){
+				for (var i:int = 0; i < _items.length; i++) 
+				{
+					_items[i].destroy();
+					_items[i] = null;
+				}
+			}
+			
 			_items = new Vector.<Item>();
 		}
 		
 		private function updateContent():void
 		{
-			while (_mcChat.chatOpen.mcChatBox.numChildren > 0) _mcChat.chatOpen.mcChatBox.removeChildAt(0);
+			while (_mcChat.chatOpen.mcChatBox.numChildren > 0) {
+				_mcChat.chatOpen.mcChatBox.removeChildAt(0);
+			}
 			
 			var yy:int = 0;
 			var len:int = (_items.length > MAX_MSG) ? MAX_MSG : _items.length;
 			
 			for (var i:int = 0; i < len; i++) 
 			{
-				yy = yy - _items[i].height - 5;
-				_items[i].y = yy;
-				_mcChat.chatOpen.mcChatBox.addChild(_items[i])
+				yy = yy - _items[i].mc.height - 5;
+				_items[i].mc.y = yy;
+				_mcChat.chatOpen.mcChatBox.addChild(_items[i].mc);
 			}
 		}
 		
-		
-		
+		public function destroy():void
+		{
+			clearContent();
+			
+			_mcChat.chatClose.removeEventListener(MouseEvent.CLICK, openChat);
+			_input.removeEventListener(FocusEvent.FOCUS_IN,textInputHandler);
+			_input.removeEventListener(FocusEvent.FOCUS_OUT, textInputHandlerOut);
+			_power.removeEventListener(MouseEvent.CLICK, onPower);	
+			_btnSend.removeEventListener(MouseEvent.CLICK, onSend);
+			_minimize.removeEventListener(MouseEvent.CLICK, onMinimize);
+			
+			if (_minimize.parent) {
+				_minimize.removeChild(_minimize);
+			}
+			if (_mcChat.parent) {
+				_mcChat.removeChild(_mcChat);
+			}
+			if (_power.parent) {
+				_power.removeChild(_power);
+			}
+			if (_chatBox.parent) {
+				_chatBox.removeChild(_chatBox);
+			}
+			
+			_minimize = null;
+			_power = null;
+			_mcChat = null;
+			_chatBox = null;
+			_input = null;
+			_btnSend = null;
+		}
 		
 	}
 

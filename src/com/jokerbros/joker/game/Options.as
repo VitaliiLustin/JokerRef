@@ -1,5 +1,7 @@
 package com.jokerbros.joker.game 
 {
+	import com.jokerbros.joker.events.GameEvent;
+	import com.jokerbros.joker.Facade.Facade;
 	import com.jokerbros.joker.user.User;
 	import flash.display.MovieClip;
 	import flash.display.StageDisplayState;
@@ -10,7 +12,7 @@ package com.jokerbros.joker.game
 	 * ...
 	 * @author JokerBros
 	 */
-	public class Options extends MovieClip
+	public class Options //extends MovieClip
 	{
 		private var _options:MovieClip
 		
@@ -28,7 +30,7 @@ package com.jokerbros.joker.game
 		
 		private function onReport(e:MouseEvent):void 
 		{
-			dispatchEvent(new Event(Event.OPEN));
+			Facade.dispatcher.dispatch(GameEvent.OPEN_OPTIONS);
 		}
 		
 		private function onFullScreen(e:MouseEvent):void 

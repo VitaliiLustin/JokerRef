@@ -20,16 +20,11 @@ import flash.events.MouseEvent;
 		private var _tablePartMC	:MovieClip;
 		private var _partPoint		:MovieClip;
 		
-		private var _tablePart		:ScoreTablePart;
-		
 		private var _gameType		:int;
 		private var _hand			:int;
 		
 		private var _gameTypeArr	:Array = [];
-		private var _defaultX		:Array = [];
-		private var _defaultY		:Array = [];
-		private var _defaultH		:Array = [];
-		private var _defaultW		:Array = [];
+		
 		private var _playerPlace	:Array = [];
 		private var _game:Game;
 		private var _results		:Vector.<String> = new Vector.<String>;
@@ -103,40 +98,6 @@ import flash.events.MouseEvent;
 			}
 		}
 		
-		public function showAllParts():void
-		{
-			for (var i:int = 0; i < TableConstants['TYPE_' + _gameType + '_PARTS_COUNT']; i++) 
-			{
-				TweenMax.to( _tablePartsVect[i], TableConstants.TWEEN_TIME, {
-					x: _defaultX[i] + (_defaultW[i] - _defaultW[i] * TableConstants.NORMAL_SCALE) * .5, 
-					y: _defaultY[i] + (_defaultH[i] - _defaultH[i] * TableConstants.NORMAL_SCALE) * .5, 
-					scaleX: TableConstants.NORMAL_SCALE, 
-					scaleY: TableConstants.NORMAL_SCALE, 
-					alpha: 1 } );
-			}
-		}
-		
-		public function showCurrentPart():void
-		{
-			var partId:int = checkCurrentPart() - 1;
-			for (var i:int = 0; i < TableConstants['TYPE_' + _gameType + '_PARTS_COUNT']; i++) 
-			{
-				if (i == partId) 
-				{
-					_tablePartsVect[i].showLineNumbers(true);
-					//TweenMax.to( _tablePartsVect[i], TableConstants.TWEEN_TIME, {
-						//x: 0, 
-						//y: 0,  
-						//alpha: 1 } );
-				}else {
-					_tablePartsVect[i].showLineNumbers(false);
-					//TweenMax.to( _tablePartsVect[i], TableConstants.TWEEN_TIME, {
-					//alpha: 0 } );
-				}
-				
-			}
-		}
-		
 		private function hideEmptyParts():void
 		{
 			var lastPart:int = 1;
@@ -152,7 +113,7 @@ import flash.events.MouseEvent;
 			}
 		}
 		
-		private function checkCurrentPart():int 
+		public function checkCurrentPart():int 
 		{
 			_hand = _game.currentHand;
 			if (_gameType == TableConstants.TYPE_1)
@@ -176,29 +137,21 @@ import flash.events.MouseEvent;
 		
 		private function buildParts():void
 		{
+			var table:ScoreTablePart;
+			
+			var curPart:int = checkCurrentPart() - 1;
 			var partY:Number = 0;
 			for (var i:int = 0; i < TableConstants['TYPE_' + _gameType + '_PARTS_COUNT']; i++)
 			{
-				_tablePart = new ScoreTablePart(this);
-				_tablePart.setData(_gameTypeArr[i]);
-				_tablePart.addEventListener(MouseEvent.MOUSE_OVER, onOver);
-				_tablePart.addEventListener(MouseEvent.MOUSE_OUT, onOut);
-				_tablePart.id = i;
-				_tablePart.y = partY;
-				_tablePart.mouseChildren = false;
+				table = new ScoreTablePart(i, this, _gameTypeArr[i], partY);
+				table.showLineNumbers(table.id == curPart);
 				
-				_defaultX.push(_tablePart.x);
-				_defaultY.push(_tablePart.y);
-				_defaultH.push(_tablePart.height);
-				_defaultW.push(_tablePart.width);
+				_partPoint.addChild(table);
+				_tablePartsVect.push(table);
 				
-				_partPoint.addChild(_tablePart);
-				_tablePartsVect.push(_tablePart);
-				
-				partY += _tablePart.height + TableConstants.PARTS_SHIFT;
+				partY += table.height + TableConstants.PARTS_SHIFT;
 				
 			}
-			showCurrentPart();
 		}
 		
 		public function setOrder(player:int, hand:int, order:int):void
@@ -211,53 +164,6 @@ import flash.events.MouseEvent;
 			{
 				ReportException.send(err.message + 'player: ' + player, 281, 'PointTable');
 			}
-		}
-		
-		private function onOver(e:MouseEvent):void
-		{
-			
-			var id:int = e.currentTarget.id;
-			
-			for (var i:int = 0; i < TableConstants['TYPE_' + _gameType + '_PARTS_COUNT']; i++)
-			{
-				if (_tablePartsVect[i].id == id)
-				{
-					TweenMax.to( _tablePartsVect[i], TableConstants.TWEEN_TIME, {
-						x: _defaultX[i] + (_defaultW[i] - _defaultW[i] * TableConstants.MAX_SCALE) * .5, 
-						y: _defaultY[i] + (_defaultH[i] - _defaultH[i] * TableConstants.MAX_SCALE) * .5, 
-						scaleX: TableConstants.MAX_SCALE, 
-						scaleY: TableConstants.MAX_SCALE, 
-						alpha: 1 } );
-					_tablePartsVect[i].showLineNumbers(true);
-				}
-				else
-				{
-					TweenMax.to( _tablePartsVect[i], TableConstants.TWEEN_TIME, {
-						y: (i < id) ? _defaultY[i] /*+ (_defaultH[id] - _defaultH[id] * TableConstants.MAX_SCALE) * .5*/ :
-									  _defaultY[i] - (_defaultH[id] - _defaultH[id] * TableConstants.MAX_SCALE) * .5, 
-						scaleX: TableConstants.NORMAL_SCALE, 
-						scaleY: TableConstants.NORMAL_SCALE, 
-						alpha: .8 } );
-					//_tablePartsVect[i].showLineNumbers(true);
-				}
-			}
-		}
-		
-		private function onOut(e:MouseEvent = null):void
-		{
-			for (var i:int = 0; i < TableConstants['TYPE_' + _gameType + '_PARTS_COUNT']; i++)
-			{
-				TweenMax.to( _tablePartsVect[i], .5, {
-					x: _defaultX[i], 
-					y: _defaultY[i], 
-					scaleX: TableConstants.NORMAL_SCALE, 
-					scaleY: TableConstants.NORMAL_SCALE, 
-					alpha: 1 } );
-				_tablePartsVect[i].showLineNumbers(true);
-				_tablePartsVect[i].mouseEnabled = true;
-			}
-			
-			showCurrentPart();
 		}
 		
 		public function restore(params:ISFSObject, currenHand:int):void

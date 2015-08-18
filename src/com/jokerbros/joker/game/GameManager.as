@@ -1,7 +1,6 @@
 package com.jokerbros.joker.game 
 {
 	import com.jokerbros.joker.events.GameEvent;
-	import com.jokerbros.joker.events.GameManagerEvent;
 	import com.jokerbros.joker.Facade.Facade;
 	import com.jokerbros.joker.user.ReportException;
 	import com.jokerbros.joker.game.CardManager;
@@ -19,7 +18,7 @@ package com.jokerbros.joker.game
 	 * ...
 	 * @author 13
 	 */
-	public class GameManager extends Sprite
+	public class GameManager 
 	{
 		
 		private var _autoMoveCardObject		:ISFSObject;
@@ -626,7 +625,8 @@ package com.jokerbros.joker.game
 					}
 				}
 					
-				dispatchEvent(new GameManagerEvent(GameManagerEvent.MOVE, data));	
+				Facade.dispatcher.dispatch(GameEvent.MOVE_MY_CARD, data);
+				//dispatchEvent(new GameManagerEvent(GameManagerEvent.MOVE, data));	
 				
 				_moveCount ++;
 				
@@ -905,7 +905,8 @@ package com.jokerbros.joker.game
 		{
 			Facade.dispatcher.removeEventListener(GameEvent.SET_ORDER, onOrder);
 			clearOrder();
-			dispatchEvent(new GameManagerEvent(GameManagerEvent.SET_ORDER, e.data));
+			Facade.dispatcher.dispatch(GameEvent.SET_ORDER_NEW,  e.data);
+			//dispatchEvent(new GameManagerEvent(GameManagerEvent.SET_ORDER, e.data));
 		}
 		
 		public function clearOrder():void
@@ -938,7 +939,8 @@ package com.jokerbros.joker.game
 		{
 			Facade.dispatcher.removeEventListener(GameEvent.SET_ORDER_TRUMP, onOrderTrump);
 			clearOrderTrump();
-			dispatchEvent(new GameManagerEvent(GameManagerEvent.SET_ORDER_TRUMP,e.data));
+			Facade.dispatcher.dispatch(GameEvent.SET_ORDER_TRUMP_NEW, e.data);
+			//dispatchEvent(new GameManagerEvent(GameManagerEvent.SET_ORDER_TRUMP,e.data));
 		}
 
 		public function clearOrderTrump():void
@@ -1070,7 +1072,8 @@ package com.jokerbros.joker.game
 				data['trump'] = _autoOrderTrumpVal;
 				data['auto'] = true;
 				
-				dispatchEvent(new GameManagerEvent(GameManagerEvent.SET_ORDER_TRUMP, data));
+				Facade.dispatcher.dispatch(GameEvent.SET_ORDER_TRUMP_NEW, data);
+				//dispatchEvent(new GameManagerEvent(GameManagerEvent.SET_ORDER_TRUMP, data));
 				
 				_autoOrderTrumpVal = ''
 			}
@@ -1079,7 +1082,8 @@ package com.jokerbros.joker.game
 				data['value'] = _autoOrderVal;
 				data['auto'] = true;
 				
-				dispatchEvent(new GameManagerEvent(GameManagerEvent.SET_ORDER, data));
+				Facade.dispatcher.dispatch(GameEvent.SET_ORDER_NEW, data);
+				//dispatchEvent(new GameManagerEvent(GameManagerEvent.SET_ORDER, data));
 				_autoOrderVal = -1
 			}
 			else
@@ -1107,7 +1111,8 @@ package com.jokerbros.joker.game
 					data["order"] = cardObject.getUtfString('order');
 				}
 			}
-			dispatchEvent(new GameManagerEvent(GameManagerEvent.MOVE, data));	
+			Facade.dispatcher.dispatch(GameEvent.MOVE_MY_CARD, data);
+			//dispatchEvent(new GameManagerEvent(GameManagerEvent.MOVE, data));	
 		}
 		
 		public function resetAutoActionVars():void
@@ -1115,6 +1120,11 @@ package com.jokerbros.joker.game
 			_autoMoveCardObject = null;
 			_autoOrderTrumpVal = '';
 			_autoOrderVal = -1;
+		}
+		
+		public function destroy():void
+		{
+			
 		}
 		
 		public function get game():MovieClip 

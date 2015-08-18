@@ -1,6 +1,7 @@
 package com.jokerbros.joker.game.chat 
 {
 	import com.jokerbros.joker.user.User;
+	import com.jokerbros.TxtHelper;
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.text.AntiAliasType;
@@ -11,20 +12,15 @@ package com.jokerbros.joker.game.chat
 	 * ...
 	 * @author ...
 	 */
-	internal final class Item extends MovieClip
+	internal final class Item //extends MovieClip
 	{
 		private var _item:MovieClip;
 		
 		public function Item(str:String, isMyMsg:Boolean = false) 
 		{
-			var arial:String  = new BGPArial().fontName;
-			
 			_item = (isMyMsg) ? new mcWhiteMsg() : new mcYallowMsg();
 			
-			_item.txt.embedFonts = true;
-			_item.txt.selectable = false;
-			_item.txt.antiAliasType = AntiAliasType.ADVANCED;
-			_item.txt.setTextFormat( new TextFormat(arial) );
+			TxtHelper.setTxtParams(_item.txt, TxtHelper.bpgarial);
 			
 			_item.txt.autoSize = TextFieldAutoSize.LEFT;
 
@@ -45,12 +41,28 @@ package com.jokerbros.joker.game.chat
 			//_item.mcAvatar.mcImg.addChild( (isMyMsg) ? User.getMyAvatar() : User.getOppAvatar() )
 			//_item.mcAvatar.mcImg.addChild( (new mcDefAvt() )
 			
-			addChild(_item);
+			//addChild(_item);
 		}
 		
 		private function onScroll(e:Event):void 
 		{
 			_item.txt.scrollV = 0;
+		}
+		
+		public function destroy():void
+		{
+			if (_item) {
+				_item.txt.removeEventListener(Event.SCROLL, onScroll);
+				if(_item.parent){
+					_item.parent.removeChild(_item);
+				}
+			}
+			_item = null;
+		}
+		
+		public function get mc():MovieClip 
+		{
+			return _item;
 		}
 		
 	}
