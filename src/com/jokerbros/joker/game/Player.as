@@ -77,9 +77,8 @@ package com.jokerbros.joker.game
 									param.radius = 90;
 									param.jokerActionX = -201.75;
 									param.jokerActionY = 114.85;
-									
-									//lastCardParam.x = 32.25;
-									//lastCardParam.y = 75.6;
+									lastCardParam.x = 32.25;
+									lastCardParam.y = 75.6;
 									_cardPosY = mcUserBox.y + mcUserBox.height / 2;
 									_cardPosX = mcUserBox.x + mcUserBox.width;
 									break;
@@ -88,10 +87,8 @@ package com.jokerbros.joker.game
 									param.radius = 150;
 									param.jokerActionX = -201.75;
 									param.jokerActionY = -169.35;
-										
-									//lastCardParam.x = 78.95;
-									//lastCardParam.y = 112.95;
-									
+									lastCardParam.x = 78.95;
+									lastCardParam.y = 112.95;
 									_cardPosY = mcUserBox.y + mcUserBox.height;
 									_cardPosX = mcUserBox.x + mcUserBox.width / 2;
 									break;
@@ -100,10 +97,8 @@ package com.jokerbros.joker.game
 									param.radius = 90;
 									param.jokerActionX = 52.4;
 									param.jokerActionY = -169.35;
-									
-									//lastCardParam.x = 125.7;
-									//lastCardParam.y = 75.6;
-									
+									lastCardParam.x = 125.7;
+									lastCardParam.y = 75.6;
 									_cardPosY = mcUserBox.y + mcUserBox.height / 2;
 									_cardPosX = mcUserBox.x;
 									break;
@@ -112,33 +107,21 @@ package com.jokerbros.joker.game
 									param.radius = 150;
 									param.jokerActionX = 52.4;
 									param.jokerActionY = 114.85;
-									
-									//lastCardParam.x = 78.95;
-									//lastCardParam.y = 47.95;
-									
+									lastCardParam.x = 78.95;
+									lastCardParam.y = 47.95;
 									_cardPosY = mcUserBox.y;
 									_cardPosX = mcUserBox.x + mcUserBox.width / 2;
 									break;
 			}
-			
-			
 		}
 		
 		public function setCardPosition(ind:int):void
 		{
-			
-			var xx:Number;
-			var yy:Number;
-			var rr:Number;
-			var scale:Number;
-
-			switch (this.owner) 
-			{
-				case Player.LEFT:	rr = 90;  	xx = _cardPosX - 100;   yy = _cardPosY - 80; scale = .35;   break;
-				case Player.TOP:	rr = 180;   xx = _cardPosX;   yy = _cardPosY - 300;  scale = .3; break;
-				case Player.RIGHT:	rr = 270;   xx = _cardPosX + 100;   yy = _cardPosY - 80;  scale = .35;  break;
-				case Player.BOTTOM:	rr = 0;   	xx = _cardPosX;   yy = _cardPosY - 20;  scale = .55; break;
-			}
+			var cardPosData:Object = CardManager.setCardsPosition(_cardPosX, _cardPosY, owner);
+			var xx:Number = cardPosData.xx;
+			var yy:Number = cardPosData.yy;
+			var rr:Number = cardPosData.rr;
+			var scale:Number = cardPosData.scale;
 			try 
 			{
 				cards[ind].rotation = param.angle * _cardRot + rr;
@@ -169,18 +152,20 @@ package com.jokerbros.joker.game
 			
 			var cardrot:Number = Math.round( - (len -1) / 2);
 
-			var xx:Number;
-			var yy:Number;
-			var rr:Number;
-			var scale:Number;
-
-			switch (this.owner) 
-			{
-				case Player.LEFT:	rr = 90;  	xx = _cardPosX - 100;   yy = _cardPosY - 80; scale = .35;   break;
-				case Player.TOP:	rr = 180;   xx = _cardPosX;   yy = _cardPosY - 300;  scale = .3; break;
-				case Player.RIGHT:	rr = 270;   xx = _cardPosX + 100;   yy = _cardPosY - 80;  scale = .35;  break;
-				case Player.BOTTOM:	rr = 0;   	xx = _cardPosX;   yy = _cardPosY - 20;  scale = .55; break;
-			}
+			
+			
+			var cardPosData:Object = CardManager.setCardsPosition(_cardPosX, _cardPosY, owner);
+			var xx:Number = cardPosData.xx;
+			var yy:Number = cardPosData.yy;
+			var rr:Number = cardPosData.rr;
+			var scale:Number = cardPosData.scale;
+			//switch (this.owner) 
+			//{
+				//case Player.LEFT:	rr = 90;  	xx = _cardPosX - 100;   yy = _cardPosY - 80; scale = .35;   break;
+				//case Player.TOP:	rr = 180;   xx = _cardPosX;   yy = _cardPosY - 300;  scale = .3; break;
+				//case Player.RIGHT:	rr = 270;   xx = _cardPosX + 100;   yy = _cardPosY - 80;  scale = .35;  break;
+				//case Player.BOTTOM:	rr = 0;   	xx = _cardPosX;   yy = _cardPosY - 20;  scale = .55; break;
+			//}
 			
 			try 
 			{

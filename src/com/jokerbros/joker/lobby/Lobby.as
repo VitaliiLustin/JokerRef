@@ -109,11 +109,13 @@ package  com.jokerbros.joker.lobby
 			
 			// init change game type
 			_changeRoomType = new ChangeRoomType(changeRoomType);
-			_changeRoomType.addEventListener(ChangeRoomTypeEvent.CHANGE, onChangeRoomType);
+			Facade.dispatcher.addEventListener(LobbyEvent.CHANGE, onChangeRoomType);
+			//_changeRoomType.addEventListener(ChangeRoomTypeEvent.CHANGE, onChangeRoomType);
 			changeRoomType.visible = false;
 			// init waiting list
 			_waitingList = new WaitingList(waitingList);
-			_waitingList.addEventListener(WaitingListEvent.REMOVE_ROOM, removeMyRoom);
+			Facade.dispatcher.addEventListener(LobbyEvent.CHANGE, onChangeRoomType);
+			//_waitingList.addEventListener(WaitingListEvent.REMOVE_ROOM, removeMyRoom);
 			
 			_tournament = new Tournament(mcTournament, mcLobbyProgress);
 			
@@ -146,7 +148,7 @@ package  com.jokerbros.joker.lobby
 			}
 		}
 		
-		private function onChangeRoomType(e:ChangeRoomTypeEvent):void 
+		private function onChangeRoomType(e:GameEvent):void 
 		{
 			_roomType = int(e.data);
 			
@@ -502,7 +504,8 @@ package  com.jokerbros.joker.lobby
 
 			if (_changeRoomType)
 			{
-				_changeRoomType.removeEventListener(ChangeRoomTypeEvent.CHANGE, onChangeRoomType);
+				//_changeRoomType.removeEventListener(ChangeRoomTypeEvent.CHANGE, onChangeRoomType);
+				Facade.dispatcher.removeEventListener(LobbyEvent.CHANGE, onChangeRoomType);
 				_changeRoomType.destroy();
 				_changeRoomType = null;
 			}

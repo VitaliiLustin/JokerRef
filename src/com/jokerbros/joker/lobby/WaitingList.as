@@ -1,7 +1,9 @@
 package com.jokerbros.joker.lobby 
 {
 	import com.greensock.TweenNano;
+	import com.jokerbros.joker.events.LobbyEvent;
 	import com.jokerbros.joker.events.WaitingListEvent;
+	import com.jokerbros.joker.Facade.Facade;
 	import com.jokerbros.joker.user.User;
 	import flash.display.MovieClip;
 	import flash.events.FocusEvent;
@@ -12,7 +14,7 @@ package com.jokerbros.joker.lobby
 	 * ...
 	 * @author JokerBros
 	 */
-	public class WaitingList extends MovieClip 
+	public class WaitingList/* extends MovieClip*/ 
 	{
 
 		private var _isVisible:Boolean;
@@ -50,7 +52,8 @@ package com.jokerbros.joker.lobby
 		private function onRemoveRoom(e:MouseEvent):void 
 		{
 			hide();
-			dispatchEvent(new WaitingListEvent(WaitingListEvent.REMOVE_ROOM));
+			Facade.dispatcher.dispatch(LobbyEvent.CHANGE, onChangeRoomType);
+			//dispatchEvent(new WaitingListEvent(WaitingListEvent.REMOVE_ROOM));
 		}
 		
 		public function show(roomID:String = '', roomPassword:String = ''):void

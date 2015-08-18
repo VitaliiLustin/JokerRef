@@ -197,8 +197,8 @@ package com.jokerbros.joker.game
 				if (trump != '')
 				{
 					_trump = new Card(trump);
-					_trump.scaleX = 0.64;
-					_trump.scaleY = 0.64;
+					_trump.scaleX = 0.5;
+					_trump.scaleY = 0.5;
 					_trump.rotation = 31;
 					_trump.x = 768.2;
 					_trump.y = 336.8;

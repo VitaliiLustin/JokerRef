@@ -21,6 +21,8 @@ package  com.jokerbros.joker.events
 		public static const SHOW_RATING			:String = "show_rating";
 		
 		public static const CHANGE_GAME_TYPE	:String = "changeGameType";
+		public static const CHANGE;				:String = "change";
+		public static const REMOVE_ROOM;		:String = "close";
 		
 		public var data: Object;
 		
