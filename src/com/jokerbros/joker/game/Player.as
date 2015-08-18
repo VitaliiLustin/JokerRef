@@ -39,6 +39,8 @@ package com.jokerbros.joker.game
 		public var owner:int;
 
 		public var cards:Vector.<Card>;
+		public var _cardPosY:Number = 0;
+		public var _cardPosX:Number = 0;
 		
 		public var username:String;
 				
@@ -52,64 +54,71 @@ package com.jokerbros.joker.game
 									rot: 0
 								 };
 		 				 
-		public function Player(pos:int,mcUserBox:MovieClip) 
+		public function Player(pos:int,mcUserBox:MovieClip, cardsContainer:MovieClip) 
 		{
 			owner = pos;
 			cards = new Vector.<Card>();
 			userBox = mcUserBox;
-			_cardsPlace = Facade.gameManager.game['cards' + pos];
+			
 			order = userBox.mcUserInfo.order;
 			currentOrder = userBox.mcUserInfo.currentOrder;
 			
 			userBox.mouseChildren = false;
 			userBox.mcUserInfo.mcColor.gotoAndStop(1);
 			userBox.addEventListener(MouseEvent.MOUSE_OVER, onOver);
-			
+			_cardsPlace = cardsContainer;
 			_initPositionX = userBox.mcUserInfo.x;
 			_startPoint	 = userBox.startPoint;
 			_finishPoint = userBox.finishPoint;
 			
 			switch (pos) 
 			{
-				case Player.LEFT		:	param.angle = 5;
-											param.radius = 150;
-											param.jokerActionX = -201.75;
-											param.jokerActionY = 114.85;
-											
-											lastCardParam.x = 32.25;
-											lastCardParam.y = 75.6;
-											
-											break;
+				case Player.LEFT	:param.angle = 5;
+									param.radius = 150;
+									param.jokerActionX = -201.75;
+									param.jokerActionY = 114.85;
 									
-				case Player.TOP		    :	param.angle = 5;
-											param.radius = 150;
-											param.jokerActionX = -201.75;
-											param.jokerActionY = -169.35;
-											
-											lastCardParam.x = 78.95;
-											lastCardParam.y = 112.95;
-											
-											break;
-											
-				case Player.RIGHT		:	param.angle = 5;
-											param.radius = 150;
-											param.jokerActionX = 52.4;
-											param.jokerActionY = -169.35;
-											
-											lastCardParam.x = 125.7;
-											lastCardParam.y = 75.6;
-											
-											break;
-											
-				case Player.BOTTOM		:	param.angle = 8;
-											param.radius = 150;
-											param.jokerActionX = 52.4;
-											param.jokerActionY = 114.85;
-
-											lastCardParam.x = 78.95;
-											lastCardParam.y = 47.95;
-											
-											break;
+									lastCardParam.x = 32.25;
+									lastCardParam.y = 75.6;
+									_cardPosY = mcUserBox.y + mcUserBox.height / 2;
+									_cardPosX = mcUserBox.x + mcUserBox.width;
+									break;
+									
+				case Player.TOP	   :param.angle = 5;
+									param.radius = 150;
+									param.jokerActionX = -201.75;
+									param.jokerActionY = -169.35;
+										
+									lastCardParam.x = 78.95;
+									lastCardParam.y = 112.95;
+									
+									_cardPosY = mcUserBox.y + mcUserBox.height;
+									_cardPosX = mcUserBox.x + mcUserBox.width / 2;
+									break;
+										
+				case Player.RIGHT	:param.angle = 5;
+									param.radius = 150;
+									param.jokerActionX = 52.4;
+									param.jokerActionY = -169.35;
+									
+									lastCardParam.x = 125.7;
+									lastCardParam.y = 75.6;
+									
+									_cardPosY = mcUserBox.y + mcUserBox.height / 2;
+									_cardPosX = mcUserBox.x;
+									break;
+									
+				case Player.BOTTOM	:param.angle = 8;
+									param.radius = 150;
+									param.jokerActionX = 52.4;
+									param.jokerActionY = 114.85;
+									
+									lastCardParam.x = 78.95;
+									lastCardParam.y = 47.95;
+									
+									_cardPosY = mcUserBox.y;
+									_cardPosX = mcUserBox.x + mcUserBox.width / 2;
+									break;
 			}
 			
 			
@@ -124,45 +133,29 @@ package com.jokerbros.joker.game
 			
 			switch (owner) 
 			{
-				case Player.LEFT:		rr = 0;   xx = _cardsPlace.x;    yy = _cardsPlace.y;   break;
-				case Player.TOP:		rr = 0;   xx = _cardsPlace.x;    yy = _cardsPlace.y;   break;
-				case Player.RIGHT:		rr = 0;   xx = _cardsPlace.x;    yy = _cardsPlace.y;   break;
-				case Player.BOTTOM:		rr = 0;   xx = _cardsPlace.x;    yy = _cardsPlace.y;   break;
+				case Player.LEFT:	rr = 90;  	xx = _cardPosX - 200;   yy = _cardPosY - 100;   break;
+				case Player.TOP:	rr = 180;   xx = _cardPosX;   yy = _cardPosY;   break;
+				case Player.RIGHT:	rr = 270;   xx = _cardPosX;   yy = _cardPosY;   break;
+				case Player.BOTTOM:	rr = 0;   	xx = _cardPosX;   yy = _cardPosY;   break;
 			}
-			
-			
-			//if (this.owner == Player.BOTTOM )
-			//{
-				try 
-				{
-					
-					this.cards[ind].rotation = this.param.angle * _cardRot + rr;
-					this.cards[ind].x = this.param.radius * Math.sin( this.cards[ind].rotation * Math.PI/180 ) + xx;
-					this.cards[ind].y = this.param.radius * ( 1 - Math.cos(this.cards[ind].rotation * Math.PI / 180 ) ) + yy;
-					
-					_cardRot ++ ;	
-				}
-				catch (err:Error)
-				{
-					ReportException.send(err.message, 168, 'Player' );
-				}
-			//}
-			
-			//if (Player.BOTTOM == owner)
-			//{
-				//cards[ind].width 	= GameConstants.CARD_OWNER_W;
-				//cards[ind].height 	= GameConstants.CARD_OWNER_H;
-			//}
-			//else
-			//{
-				//cards[ind].width 	= GameConstants.CARD_OPPON_W;
-				//cards[ind].height 	= GameConstants.CARD_OPPON_H;
-			//}
+			try 
+			{
+				cards[ind].rotation = param.angle * _cardRot + rr;
+				cards[ind].x = param.radius * Math.sin( cards[ind].rotation * Math.PI/180 ) + xx;
+				cards[ind].y = param.radius * ( 1 - Math.cos(cards[ind].rotation * Math.PI / 180 ) ) + yy;
+				
+				_cardRot ++ ;	
+			}
+			catch (err:Error)
+			{
+				ReportException.send(err.message, 168, 'Player' );
+			}
 			
 		}
 		
 		public function updateCardPosition():void
 		{		
+			//return
 			var len:int = 0;
 			
 			for (var j:int = 0; j < this.cards.length; j++) 
@@ -178,35 +171,32 @@ package com.jokerbros.joker.game
 			var xx:Number;
 			var yy:Number;
 			var rr:Number;
-			
+
 			switch (this.owner) 
 			{
-				case Player.LEFT:		rr = 0;   xx = _cardsPlace.x;    yy = _cardsPlace.y;   break;
-				case Player.TOP:		rr = 0;   xx = _cardsPlace.x;    yy = _cardsPlace.y;   break;
-				case Player.RIGHT:		rr = 0;   xx = _cardsPlace.x;    yy = _cardsPlace.y;   break;
-				case Player.BOTTOM:		rr = 0;   xx = _cardsPlace.x;    yy = _cardsPlace.y;   break;
+				case Player.LEFT:	rr = 90;  	xx = _cardPosX - 200;   yy = _cardPosY - 100;   break;
+				case Player.TOP:	rr = 180;   xx = _cardPosX;   yy = _cardPosY;   break;
+				case Player.RIGHT:	rr = 270;   xx = _cardPosX;   yy = _cardPosY;   break;
+				case Player.BOTTOM:	rr = 0;   	xx = _cardPosX;   yy = _cardPosY;   break;
 			}
 			
-			//if (this.owner == Player.BOTTOM )
-			//{
-				try 
+			try 
+			{
+				for (var i:int = 0; i < this.cards.length; i++) 
 				{
-					for (var i:int = 0; i < this.cards.length; i++) 
+					if (cards[i] != null && cards[i].state != Card.CARD_MOVED)
 					{
-						if (this.cards[i] != null && this.cards[i].state != Card.CARD_MOVED)
-						{
-							this.cards[i].rotation = this.param.angle * cardrot + rr;
-							this.cards[i].x = this.param.radius * Math.sin( this.cards[i].rotation * Math.PI / 180 ) + xx;
-							this.cards[i].y = this.param.radius * ( 1 - Math.cos(this.cards[i].rotation * Math.PI / 180 ) ) + yy;
-							cardrot++;
-						}
-					}	
-				}
-				catch (err:Error)
-				{
-					ReportException.send(err.message, 217, 'Player' );
-				}
-			//}
+						cards[i].rotation = this.param.angle * cardrot + rr;
+						cards[i].x = param.radius * Math.sin( cards[i].rotation * Math.PI / 180 ) + xx;
+						cards[i].y = param.radius * ( 1 - Math.cos(cards[i].rotation * Math.PI / 180 ) ) + yy;
+						cardrot++;
+					}
+				}	
+			}
+			catch (err:Error)
+			{
+				ReportException.send(err.message, 217, 'Player' );
+			}
 		}
 		
 		

@@ -21,36 +21,28 @@ package com.jokerbros.joker.game
 	public class GameTimer extends mcUserLoading 
 	{
 		
-		private const DEFAULT_SECOND:int = 15;
-		private const START_PLAY_SOUND_SEC:int = 7;
-		
-		private var _game:MovieClip;
-		
-
-		private var _second:int;
-		private var _owner:String;
-		
-		private var _sound:Sound;
-		private var _soundTimer:Timer;
-		private var _soundChannel:SoundChannel;
-		
-		private var _timer:Timer;
-				
-		private var _isEnabledSound:Boolean = false;
+		private const DEFAULT_SECOND		:int = 15;
+		private const START_PLAY_SOUND_SEC	:int = 7;
+		private var _game					:MovieClip;
+		private var _second					:int;
+		private var _owner					:String;
+		private var _sound					:Sound;
+		private var _soundTimer				:Timer;
+		private var _soundChannel			:SoundChannel;
+		private var _timer					:Timer;
+		private var _isEnabledSound			:Boolean = false;
 		
 		public function GameTimer(obj:MovieClip, ind:int=0) 
 		{
 			_game = obj;
 			
-			this.x = 35;
-			this.y = 92;
+			this.x = 25;
+			this.y = 72;
 		}
 		
-		
-
 		public function enable(owner:int = 4, sec:int = 15):void
 		{
-			this.disable();
+			disable();
 			
 			_second = sec;
 			
@@ -66,6 +58,7 @@ package com.jokerbros.joker.game
 			try 
 			{
 				_game['player' + _owner].addChild(this);
+				
 			}
 			catch (err:Error)
 			{
