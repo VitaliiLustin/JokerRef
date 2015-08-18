@@ -52,7 +52,7 @@ package com.jokerbros.joker.lobby
 		private function onRemoveRoom(e:MouseEvent):void 
 		{
 			hide();
-			Facade.dispatcher.dispatch(LobbyEvent.CHANGE, onChangeRoomType);
+			Facade.dispatcher.dispatch(LobbyEvent.REMOVE_ROOM);
 			//dispatchEvent(new WaitingListEvent(WaitingListEvent.REMOVE_ROOM));
 		}
 		

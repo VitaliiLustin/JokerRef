@@ -92,6 +92,9 @@ package  com.jokerbros.joker.lobby
 			Facade.dispatcher.addEventListener(LobbyEvent.SHOW_GAME_HISTORY, showGameHistory);
 			Facade.dispatcher.addEventListener(LobbyEvent.SHOW_RATING, showRating);
 			Facade.dispatcher.addEventListener(LobbyEvent.CHANGE_GAME_TYPE, onChangeGameType);
+			Facade.dispatcher.addEventListener(LobbyEvent.CHANGE, onChangeRoomType);
+			Facade.dispatcher.addEventListener(LobbyEvent.REMOVE_ROOM, removeMyRoom);
+			
 			
 			initProgress();
 			
@@ -109,14 +112,12 @@ package  com.jokerbros.joker.lobby
 			
 			// init change game type
 			_changeRoomType = new ChangeRoomType(changeRoomType);
-			Facade.dispatcher.addEventListener(LobbyEvent.CHANGE, onChangeRoomType);
-			//_changeRoomType.addEventListener(ChangeRoomTypeEvent.CHANGE, onChangeRoomType);
 			changeRoomType.visible = false;
+			
 			// init waiting list
 			_waitingList = new WaitingList(waitingList);
-			Facade.dispatcher.addEventListener(LobbyEvent.CHANGE, onChangeRoomType);
-			//_waitingList.addEventListener(WaitingListEvent.REMOVE_ROOM, removeMyRoom);
 			
+			// init tournament
 			_tournament = new Tournament(mcTournament, mcLobbyProgress);
 			
 			// init table	
@@ -452,7 +453,8 @@ package  com.jokerbros.joker.lobby
 
 			if (_waitingList)
 			{
-				_waitingList.removeEventListener(WaitingListEvent.REMOVE_ROOM, removeMyRoom);
+				Facade.dispatcher.removeEventListener(LobbyEvent.REMOVE_ROOM, removeMyRoom);
+				//_waitingList.removeEventListener(LobbyEvent.REMOVE_ROOM, removeMyRoom);
 				_waitingList.destroy();
 				_waitingList = null
 			}

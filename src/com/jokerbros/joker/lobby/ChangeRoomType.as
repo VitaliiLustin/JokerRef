@@ -83,15 +83,15 @@ package com.jokerbros.joker.lobby
 			{
 				funTabActive(true);
 				cashTabActive(false);
-				
-				dispatchEvent(new ChangeRoomTypeEvent(ChangeRoomTypeEvent.CHANGE, 2))
+				Facade.dispatcher.dispatch(LobbyEvent.CHANGE, 2);
+				//dispatchEvent(new ChangeRoomTypeEvent(ChangeRoomTypeEvent.CHANGE, 2))
 			}
 			else
 			{
 				cashTabActive(true);
 				funTabActive(false);
-				
-				dispatchEvent(new ChangeRoomTypeEvent(ChangeRoomTypeEvent.CHANGE, 1))
+				Facade.dispatcher.dispatch(LobbyEvent.CHANGE, 1);
+				//dispatchEvent(new ChangeRoomTypeEvent(ChangeRoomTypeEvent.CHANGE, 1))
 			}
 		}
 		
