@@ -4,6 +4,7 @@ package  com.jokerbros.joker.lobby
 	import com.jokerbros.joker.events.AlertEvent;
 	import com.jokerbros.joker.events.ChangeRoomTypeEvent;
 	import com.jokerbros.joker.events.CreateRoomEvent;
+	import com.jokerbros.joker.events.GameEvent;
 	import com.jokerbros.joker.events.JoinRoomEvent;
 	import com.jokerbros.joker.events.LobbyEvent;
 	import com.jokerbros.joker.events.TableOfRoomsEvent;
@@ -163,7 +164,7 @@ package  com.jokerbros.joker.lobby
 			
 		}
 		
-		private function onChangeGameType(e:LobbyEvent):void 
+		private function onChangeGameType(e:GameEvent):void 
 		{
 			showProgress();
 			var data:ISFSObject = new SFSObject();

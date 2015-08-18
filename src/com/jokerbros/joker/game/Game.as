@@ -565,7 +565,7 @@ package com.jokerbros.joker.game
 				mcInfoBar.x =  w/2;
 				mcChat.x = 20; 
 				mcChat.y = h - 34;
-				_scoresTable.x = 0;
+				//_scoresTable.x = 0;
 				//_scoresTable.y = 15;
 			}
 			catch (err:Error){}

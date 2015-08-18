@@ -80,7 +80,7 @@ package com.jokerbros.joker.windows
 				mcModal.height = stage.stageHeight + 250;
 				
 				x = stage.stageWidth - (this.width) * .5;
-				y = stage.stageHeight - (this.height) * .5;
+				y = stage.stageHeight - this.height;
 			}
 			catch (err:Error){}
 		}

@@ -115,7 +115,7 @@ package com.jokerbros.joker.game {
 			var paramXY:Object = Facade.gameManager.calcAnimXY(pos);
 			switch ( pos ) 
 			{
-				case Player.LEFT: 	clearCardParams = {	x:paramXY.x, y:paramXY.y, z:119.7,  rotation:0, rotationX:-38,   rotationY:0, rotationZ:0, delay:0.75 }; break;
+				case Player.LEFT: 	clearCardParams = {	x:paramXY.x, y:paramXY.y, z:119.7,  rotation:0, rotationX:-38,   rotationY:0, rotationZ:0, delay:0.75 };	 break;
 				case Player.TOP: 	clearCardParams = { x:paramXY.x, y:paramXY.y, z:180,	rotation:0, rotationX:-38,   rotationY:0, rotationZ:0, delay:0.75 };	break;
 				case Player.RIGHT: 	clearCardParams = { x:paramXY.x, y:paramXY.y, z:119.6,	rotation:0, rotationX:-38,   rotationY:0, rotationZ:0, delay:0.75 };	break;
 				case Player.BOTTOM: clearCardParams = { x:paramXY.x, y:paramXY.y, z:70,	 	rotation:0, rotationX:-38,   rotationY:0, rotationZ:0, delay:0.75 };	break;
